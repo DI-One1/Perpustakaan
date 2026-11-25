@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BILIK — Blueprint Workflow &amp; Spesifikasi Teknis Tim Backend</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary: #132B6D;
+      --primary-hover: #0F2159;
+      --primary-soft: #EBF0FB;
+      --navy: #093A71;
+      --blue-accent: #1D4ED8;
+      --blue-soft: #DBEAFE;
+      --bg: #F8FAFC;
+      --card: #FFFFFF;
+      --border: #E2E8F0;
+      --heading: #0A0A0A;
+      --text: #1E293B;
+      --muted: #64748B;
+      --success: #059669;
+      --success-bg: #ECFDF5;
+      --warning: #D97706;
+      --warning-bg: #FFFBEB;
+      --danger: #E40014;
+      --danger-bg: #FEF2F2;
+      --radius: 12px;
+      --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
+      --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.06);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    code, pre, .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Top Institution Bar */
+    .top-bar {
+      background: var(--navy);
+      color: #FFFFFF;
+      font-size: 12px;
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* Sticky Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+    }
+
+    .header-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: #FFFFFF;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .brand-title { font-weight: 800; font-size: 16px; color: var(--heading); }
+    .brand-sub { font-size: 12px; color: var(--muted); }
+
+    .nav-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .nav-pills a {
+      text-decoration: none;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--muted);
+      padding: 7px 12px;
+      border-radius: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .nav-pills a:hover {
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 28px 24px 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    /* Hero Banner */
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--navy) 100%);
+      color: #FFFFFF;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 {
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 14.5px;
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 820px;
+    }
+
+    .hero-meta {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+    }
+
+    .hero-stat {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .hero-stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.85; }
+    .hero-stat-val { font-size: 15px; font-weight: 700; margin-top: 2px; }
+
+    /* Section Headings */
+    .sec-head {
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .sec-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .sec-head h2 {
+      font-size: 21px;
+      font-weight: 800;
+      color: var(--heading);
+    }
+
+    .sec-head p {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* Cards & Grids */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+
+    /* =======================================================
+       1. WORKSPACE PREVIEW (INLISLite + BILIK Style)
+       ======================================================= */
+    .workspace-shell {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .ws-switcher-bar {
+      background: #F1F5F9;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .ws-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .ws-tab {
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .ws-tab.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+    }
+
+    .ws-body {
+      display: grid;
+      grid-template-columns: 245px 1fr;
+      min-height: 470px;
+    }
+
+    @media (max-width: 860px) {
+      .ws-body { grid-template-columns: 1fr; }
+    }
+
+    .ws-sidebar {
+      background: #FFFFFF;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 14px 10px;
+    }
+
+    .ws-sb-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 10px 14px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 10px;
+    }
+
+    .ws-sb-logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #FFFFFF;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .ws-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .ws-menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .ws-menu-item.active {
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .ws-menu-item.locked {
+      opacity: 0.45;
+      font-style: italic;
+    }
+
+    .ws-sb-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-left: 8px;
+    }
+
+    .ws-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #FFFFFF;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .ws-main {
+      background: #F8FAFC;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ws-topbar {
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .ws-content {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .ws-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .ws-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 12px;
+    }
+
+    .kpi-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .kpi-title { font-size: 11.5px; color: var(--muted); font-weight: 600; }
+    .kpi-val { font-size: 22px; font-weight: 800; color: var(--heading); margin: 2px 0; }
+    .kpi-sub { font-size: 11px; color: var(--muted); }
+
+    .kpi-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 15px;
+      color: #FFFFFF;
+    }
+
+    /* =======================================================
+       2. SVG FLOWCHART VIEWER (Clean Blue Diagram Style)
+       ======================================================= */
+    .flow-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .flow-tab {
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 9px;
+      cursor: pointer;
+    }
+
+    .flow-tab.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+    }
+
+    .flow-canvas {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      overflow-x: auto;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .flow-panel { display: none; }
+    .flow-panel.active { display: block; }
+
+    .flow-legend {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .lg-pill { width: 22px; height: 12px; border-radius: 999px; background: #1D4ED8; }
+    .lg-box { width: 18px; height: 12px; border-radius: 3px; background: #DBEAFE; border: 1.5px solid #1D4ED8; }
+    .lg-diamond { width: 12px; height: 12px; background: #FFFFFF; border: 1.5px solid #1D4ED8; transform: rotate(45deg); }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #FFFFFF;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    th {
+      background: #F1F5F9;
+      color: var(--heading);
+      font-weight: 700;
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+    .b-primary { background: var(--primary-soft); color: var(--primary); }
+    .b-success { background: var(--success-bg); color: var(--success); }
+    .b-warning { background: var(--warning-bg); color: var(--warning); }
+    .b-danger { background: var(--danger-bg); color: var(--danger); }
+    .b-muted { background: #F1F5F9; color: var(--muted); }
+
+    /* Commit Box */
+    .commit-box {
+      background: #0F172A;
+      color: #E2E8F0;
+      border-radius: 12px;
+      padding: 18px 20px;
+      font-size: 12.5px;
+      overflow-x: auto;
+      line-height: 1.65;
+    }
+    .c-key { color: #93C5FD; }
+    .c-str { color: #86EFAC; }
+    .c-del { color: #FCA5A5; }
+    .c-cmt { color: #94A3B8; }
+
+    ul.clean-list {
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13.5px;
+    }
+
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: var(--primary-soft);
+      padding: 14px 16px;
+      border-radius: 0 10px 10px 0;
+      font-size: 13.5px;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--muted);
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <span><strong>BILIK</strong>: Basis Informasi &amp; Literasi Islam Terpadu Kejuruan (SMK TI BAZMA)</span>
+    <span>Yayasan BAZMA Pertamina &bull; Dokumen Acuan Resmi Tim Backend</span>
+  </div>
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark">B</div>
+        <div>
+          <div class="brand-title">Blueprint Arsitektur &amp; Workflow BILIK</div>
+          <div class="brand-sub">Acuan Terpadu: Workspace, Flowchart Sistem, Aturan Bisnis, &amp; Kontrak Data</div>
+        </div>
+      </div>
+      <nav class="nav-pills" aria-label="Navigasi Bagian">
+        <a href="#workspace">1. Workspace</a>
+        <a href="#flowcharts">2. Workflow Flowchart</a>
+        <a href="#roles">3. Role &amp; RBAC</a>
+        <a href="#integrasi">4. Integrasi Fitur</a>
+        <a href="#aturan">5. Aturan Bisnis</a>
+        <a href="#audit-opname">6. Commit &amp; Opname</a>
+        <a href="#kode-api">7. Standar Bahasa &amp; API</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- HERO -->
+    <section class="hero">
+      <span class="hero-badge">Single Source of Truth untuk Tim Backend (Framework-Agnostic)</span>
+      <h1>Pedoman Komprehensif Workflow, Role, &amp; Arsitektur Data BILIK</h1>
+      <p>
+        Dokumen visual ini merangkum seluruh alur kerja sistem dari proses login satu identitas, perpindahan workspace (Warga, Pustakawan, Admin, Admin Master), alokasi eksemplar fisik ber-barcode, antrean FIFO, perpanjangan, denda, Stock Opname, hingga standar Git-style Commit dan penamaan Bahasa Indonesia penuh.
+      </p>
+      <div class="hero-meta">
+        <div class="hero-stat">
+          <div class="hero-stat-label">Prinsip Identitas</div>
+          <div class="hero-stat-val">1 Akun = Multi Workspace</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-label">Standar Kode &amp; DB</div>
+          <div class="hero-stat-val">100% Bahasa Indonesia (snake_case)</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-label">Denda &amp; Pengajuan</div>
+          <div class="hero-stat-val">Rp500/hari &bull; Tenggat 24 Jam</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-label">Audit &amp; Opname</div>
+          <div class="hero-stat-val">Git-Style Commit (Immutable)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 1: WORKSPACE PREVIEW -->
+    <section id="workspace">
+      <div class="sec-head">
+        <div>
+          <span class="sec-num">Bagian 1</span>
+          <h2>Preview Workspace Pengelola (Mode Pustakawan / Admin / Admin Master)</h2>
+          <p>Ketika pengguna ber-role staf masuk dan memilih Mode Pengelola, pengguna diarahkan ke workspace ber-sidebar seperti pola INLISLite berikut.</p>
+        </div>
+      </div>
+
+      <div class="workspace-shell">
+        <div class="ws-switcher-bar">
+          <span style="font-size: 12.5px; font-weight: 700; color: var(--heading);">Simulasi Perpindahan Workspace (1 Identitas Tunggal):</span>
+          <div class="ws-tabs" role="tablist">
+            <button type="button" class="ws-tab" onclick="switchWorkspace('warga', this)">Mode Warga (Utama)</button>
+            <button type="button" class="ws-tab active" onclick="switchWorkspace('pustakawan', this)">Mode Pustakawan</button>
+            <button type="button" class="ws-tab" onclick="switchWorkspace('admin', this)">Mode Admin</button>
+            <button type="button" class="ws-tab" onclick="switchWorkspace('master', this)">Mode Admin Master</button>
+          </div>
+        </div>
+
+        <div id="ws-preview-body" class="ws-body">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: FLOWCHARTS -->
+    <section id="flowcharts">
+      <div class="sec-head">
+        <div>
+          <span class="sec-num">Bagian 2</span>
+          <h2>Diagram Workflow Lengkap Sistem (Interactive Flowchart)</h2>
+          <p>Pilih tab alur kerja di bawah ini untuk melihat alur keputusan backend beserta kondisi pengecualiannya.</p>
+        </div>
+      </div>
+
+      <div class="flow-tabs">
+        <button type="button" class="flow-tab active" onclick="switchFlow('flow-auth', this)">1. Login &amp; Perpindahan Workspace</button>
+        <button type="button" class="flow-tab" onclick="switchFlow('flow-pinjam', this)">2. Pengajuan Peminjaman &amp; Antrean FIFO</button>
+        <button type="button" class="flow-tab" onclick="switchFlow('flow-sirkulasi', this)">3. Meja Sirkulasi, Kembali, &amp; Denda</button>
+        <button type="button" class="flow-tab" onclick="switchFlow('flow-perpanjangan', this)">4. Perpanjangan &amp; Pembatalan</button>
+        <button type="button" class="flow-tab" onclick="switchFlow('flow-opname', this)">5. Stock Opname &amp; Git-Style Commit</button>
+      </div>
+
+      <div class="flow-canvas">
+        <!-- FLOW 1: AUTH & WORKSPACE -->
+        <div id="flow-auth" class="flow-panel active">
+          <svg viewBox="0 0 1060 360" width="100%" style="min-width: 820px; height: auto;">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#1D4ED8" />
+              </marker>
+            </defs>
+
+            <!-- Start -->
+            <rect x="20" y="145" width="130" height="44" rx="22" fill="#1D4ED8" />
+            <text x="85" y="172" text-anchor="middle" fill="#FFF" font-size="12" font-weight="700">Login NISN/NIP</text>
+
+            <!-- Auth Check -->
+            <line x1="150" y1="167" x2="195" y2="167" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <rect x="198" y="140" width="145" height="54" rx="8" fill="#3B82F6" />
+            <text x="270" y="164" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">Validasi Kredensial</text>
+            <text x="270" y="180" text-anchor="middle" fill="#E0F2FE" font-size="10.5">&amp; Sesi httpOnly</text>
+
+            <!-- Soft Deleted Check -->
+            <line x1="343" y1="167" x2="390" y2="167" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <polygon points="460,122 530,167 460,212 390,167" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2" />
+            <text x="460" y="164" text-anchor="middle" fill="#0F172A" font-size="11" font-weight="700">Akun Aktif</text>
+            <text x="460" y="178" text-anchor="middle" fill="#0F172A" font-size="10.5">(Not Deleted)?</text>
+
+            <!-- No -> Reject -->
+            <line x1="460" y1="122" x2="460" y2="75" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="472" y="102" fill="#DC2626" font-size="11" font-weight="700">Tidak</text>
+            <rect x="385" y="25" width="150" height="46" rx="23" fill="#E40014" />
+            <text x="460" y="53" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">Tolak Login (401)</text>
+
+            <!-- Yes -> Mode Warga Default -->
+            <line x1="530" y1="167" x2="585" y2="167" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="546" y="158" fill="#1D4ED8" font-size="11" font-weight="700">Ya</text>
+            <rect x="588" y="140" width="160" height="54" rx="8" fill="#DBEAFE" stroke="#1D4ED8" stroke-width="1.5" />
+            <text x="668" y="163" text-anchor="middle" fill="#1E3A8A" font-size="11.5" font-weight="700">Masuk Mode Warga</text>
+            <text x="668" y="179" text-anchor="middle" fill="#1E3A8A" font-size="10">(Beranda / Katalog)</text>
+
+            <!-- Check Extra Role -->
+            <line x1="748" y1="167" x2="795" y2="167" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <polygon points="865,122 935,167 865,212 795,167" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2" />
+            <text x="865" y="164" text-anchor="middle" fill="#0F172A" font-size="11" font-weight="700">Punya Role</text>
+            <text x="865" y="178" text-anchor="middle" fill="#0F172A" font-size="10.5">Staf / Admin?</text>
+
+            <!-- Branch to Workspaces -->
+            <line x1="865" y1="212" x2="865" y2="255" stroke="#1D4ED8" stroke-width="2" />
+            <text x="875" y="238" fill="#1D4ED8" font-size="11" font-weight="700">Ya (Tampil Switcher di Profil)</text>
+            <line x1="650" y1="255" x2="980" y2="255" stroke="#1D4ED8" stroke-width="2" />
+            <line x1="650" y1="255" x2="650" y2="282" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <line x1="815" y1="255" x2="815" y2="282" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <line x1="980" y1="255" x2="980" y2="282" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+
+            <rect x="575" y="285" width="150" height="52" rx="8" fill="#132B6D" />
+            <text x="650" y="308" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">/pustakawan</text>
+            <text x="650" y="324" text-anchor="middle" fill="#BFDBFE" font-size="10">Sirkulasi, Koleksi, Opname</text>
+
+            <rect x="740" y="285" width="150" height="52" rx="8" fill="#132B6D" />
+            <text x="815" y="308" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">/admin</text>
+            <text x="815" y="324" text-anchor="middle" fill="#BFDBFE" font-size="10">Full Ops, Warga, Audit, Policy</text>
+
+            <rect x="905" y="285" width="145" height="52" rx="8" fill="#093A71" />
+            <text x="977" y="308" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">/admin/master</text>
+            <text x="977" y="324" text-anchor="middle" fill="#BFDBFE" font-size="10">Eksklusif CRUD Akun Admin</text>
+          </svg>
+        </div>
+
+        <!-- FLOW 2: PENGAJUAN & ANTREAN FIFO -->
+        <div id="flow-pinjam" class="flow-panel">
+          <svg viewBox="0 0 1080 420" width="100%" style="min-width: 840px; height: auto;">
+            <!-- Start -->
+            <rect x="20" y="40" width="150" height="44" rx="22" fill="#1D4ED8" />
+            <text x="95" y="67" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">Warga Klik Aksi Buku</text>
+
+            <!-- Cek Kelayakan -->
+            <line x1="170" y1="62" x2="215" y2="62" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <polygon points="300,14 382,62 300,110 218,62" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2" />
+            <text x="300" y="54" text-anchor="middle" fill="#0F172A" font-size="10.5" font-weight="700">Lolos Kelayakan?</text>
+            <text x="300" y="69" text-anchor="middle" fill="#64748B" font-size="9.5">(Denda=0, Tidak Blokir,</text>
+            <text x="300" y="81" text-anchor="middle" fill="#64748B" font-size="9.5">Belum Pinjam/Antre)</text>
+
+            <!-- Tidak Layak -->
+            <line x1="300" y1="110" x2="300" y2="165" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="310" y="142" fill="#DC2626" font-size="11" font-weight="700">Tidak</text>
+            <rect x="215" y="168" width="170" height="50" rx="8" fill="#FEF2F2" stroke="#E40014" stroke-width="1.5" />
+            <text x="300" y="190" text-anchor="middle" fill="#991B1B" font-size="11" font-weight="700">Tolak (RFC 7807)</text>
+            <text x="300" y="206" text-anchor="middle" fill="#991B1B" font-size="9.5">DENDA / BLOKIR / KUOTA_PENUH</text>
+
+            <!-- Stok Tersedia? -->
+            <line x1="382" y1="62" x2="435" y2="62" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="395" y="53" fill="#1D4ED8" font-size="11" font-weight="700">Ya</text>
+            <polygon points="515,17 592,62 515,107 438,62" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2" />
+            <text x="515" y="58" text-anchor="middle" fill="#0F172A" font-size="11" font-weight="700">Eksemplar</text>
+            <text x="515" y="72" text-anchor="middle" fill="#0F172A" font-size="11" font-weight="700">Tersedia &gt; 0?</text>
+
+            <!-- YA: Alokasi Fisik -->
+            <line x1="592" y1="62" x2="645" y2="62" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="606" y="53" fill="#1D4ED8" font-size="11" font-weight="700">Ya</text>
+            <rect x="648" y="32" width="195" height="60" rx="8" fill="#3B82F6" />
+            <text x="745" y="55" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">Kunci 1 Unit (FOR UPDATE)</text>
+            <text x="745" y="72" text-anchor="middle" fill="#E0F2FE" font-size="10">eksemplar = 'direservasi'</text>
+            <text x="745" y="85" text-anchor="middle" fill="#E0F2FE" font-size="10">reservasi = 'siap_diambil' (24j)</text>
+
+            <!-- Start Countdown + Notif -->
+            <line x1="843" y1="62" x2="885" y2="62" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <rect x="888" y="34" width="175" height="56" rx="28" fill="#059669" />
+            <text x="975" y="58" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">Countdown 24:00:00</text>
+            <text x="975" y="74" text-anchor="middle" fill="#D1FAE5" font-size="10">Notif In-App + Email Warga</text>
+
+            <!-- TIDAK: Antrean FIFO -->
+            <line x1="515" y1="107" x2="515" y2="170" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="524" y="142" fill="#1D4ED8" font-size="11" font-weight="700">Tidak (Stok Kosong)</text>
+            <polygon points="515,173 595,218 515,263 435,218" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2" />
+            <text x="515" y="214" text-anchor="middle" fill="#0F172A" font-size="11" font-weight="700">Kuota Antrean</text>
+            <text x="515" y="228" text-anchor="middle" fill="#0F172A" font-size="10">Masih Ada (Maks 3/5)?</text>
+
+            <!-- Kuota Penuh -->
+            <line x1="435" y1="218" x2="380" y2="290" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="386" y="245" fill="#DC2626" font-size="11" font-weight="700">Penuh</text>
+            <rect x="275" y="293" width="175" height="46" rx="23" fill="#E40014" />
+            <text x="362" y="320" text-anchor="middle" fill="#FFF" font-size="11" font-weight="700">Tolak: ANTREAN_PENUH</text>
+
+            <!-- Masuk FIFO -->
+            <line x1="595" y1="218" x2="650" y2="218" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="610" y="209" fill="#1D4ED8" font-size="11" font-weight="700">Ada</text>
+            <rect x="653" y="188" width="190" height="60" rx="8" fill="#DBEAFE" stroke="#1D4ED8" stroke-width="1.5" />
+            <text x="748" y="212" text-anchor="middle" fill="#1E3A8A" font-size="11.5" font-weight="700">Masuk Antrean FIFO</text>
+            <text x="748" y="228" text-anchor="middle" fill="#1E3A8A" font-size="10">status = 'menunggu', posisi #N</text>
+
+            <!-- Promosi Atomik -->
+            <line x1="748" y1="248" x2="748" y2="295" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <rect x="618" y="298" width="265" height="66" rx="8" fill="#132B6D" />
+            <text x="750" y="320" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">Pemicu Promosi Atomik (Saat Unit Bebas)</text>
+            <text x="750" y="336" text-anchor="middle" fill="#BFDBFE" font-size="10">Antrean #1 naik ke 'siap_diambil'</text>
+            <text x="750" y="350" text-anchor="middle" fill="#BFDBFE" font-size="10">Hanya jika unit kondisi baik ('tersedia')</text>
+            <line x1="883" y1="331" x2="975" y2="331" stroke="#1D4ED8" stroke-width="2" />
+            <line x1="975" y1="331" x2="975" y2="92" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+          </svg>
+        </div>
+
+        <!-- FLOW 3: MEJA SIRKULASI, KEMBALI & DENDA -->
+        <div id="flow-sirkulasi" class="flow-panel">
+          <svg viewBox="0 0 1080 390" width="100%" style="min-width: 840px; height: auto;">
+            <!-- Pinjam di Meja -->
+            <rect x="20" y="30" width="160" height="44" rx="22" fill="#1D4ED8" />
+            <text x="100" y="57" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">Di Meja Pustakawan</text>
+
+            <line x1="180" y1="52" x2="225" y2="52" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <rect x="228" y="25" width="175" height="54" rx="8" fill="#3B82F6" />
+            <text x="315" y="48" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">Validasi 1 &amp; 2</text>
+            <text x="315" y="64" text-anchor="middle" fill="#E0F2FE" font-size="10">Scan Kartu + Scan BK-xxxx</text>
+
+            <line x1="403" y1="52" x2="455" y2="52" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <polygon points="535,10 615,52 535,94 455,52" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2" />
+            <text x="535" y="48" text-anchor="middle" fill="#0F172A" font-size="10.5" font-weight="700">Eksemplar milik</text>
+            <text x="535" y="62" text-anchor="middle" fill="#0F172A" font-size="10.5">orang lain?</text>
+
+            <line x1="615" y1="52" x2="675" y2="52" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="630" y="43" fill="#DC2626" font-size="11" font-weight="700">Ya</text>
+            <rect x="678" y="25" width="220" height="54" rx="27" fill="#E40014" />
+            <text x="788" y="49" text-anchor="middle" fill="#FFF" font-size="11" font-weight="700">TOLAK MUTLAK (409)</text>
+            <text x="788" y="64" text-anchor="middle" fill="#FEE2E2" font-size="9.5">Kolom buku tetap kosong</text>
+
+            <line x1="535" y1="94" x2="535" y2="145" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="546" y="124" fill="#1D4ED8" font-size="11" font-weight="700">Tidak (Cocok / Tersedia)</text>
+            <rect x="425" y="148" width="220" height="52" rx="8" fill="#059669" />
+            <text x="535" y="170" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">Konfirmasi Pinjam (7 Hari)</text>
+            <text x="535" y="186" text-anchor="middle" fill="#D1FAE5" font-size="10">eksemplar='dipinjam', pinjaman='aktif'</text>
+
+            <!-- Pengembalian -->
+            <rect x="20" y="255" width="160" height="44" rx="22" fill="#132B6D" />
+            <text x="100" y="282" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">Pengembalian Fisik</text>
+
+            <line x1="180" y1="277" x2="225" y2="277" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <polygon points="300,235 375,277 300,319 225,277" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2" />
+            <text x="300" y="274" text-anchor="middle" fill="#0F172A" font-size="10.5" font-weight="700">Terlambat</text>
+            <text x="300" y="288" text-anchor="middle" fill="#0F172A" font-size="10.5">Jatuh Tempo?</text>
+
+            <line x1="300" y1="319" x2="300" y2="345" stroke="#1D4ED8" stroke-width="2" />
+            <rect x="195" y="345" width="215" height="36" rx="6" fill="#FFFBEB" stroke="#D97706" stroke-width="1.5" />
+            <text x="302" y="367" text-anchor="middle" fill="#92400E" font-size="10.5" font-weight="700">Ya: Terbit Denda Rp500 x Hari</text>
+
+            <line x1="375" y1="277" x2="435" y2="277" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <polygon points="515,235 595,277 515,319 435,277" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2" />
+            <text x="515" y="274" text-anchor="middle" fill="#0F172A" font-size="10.5" font-weight="700">Kondisi Fisik</text>
+            <text x="515" y="288" text-anchor="middle" fill="#0F172A" font-size="10.5">Buku Baik?</text>
+
+            <line x1="595" y1="277" x2="655" y2="277" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="610" y="268" fill="#1D4ED8" font-size="11" font-weight="700">Ya</text>
+            <rect x="658" y="250" width="220" height="54" rx="8" fill="#DBEAFE" stroke="#1D4ED8" stroke-width="1.5" />
+            <text x="768" y="273" text-anchor="middle" fill="#1E3A8A" font-size="11" font-weight="700">Promosi Antrean #1 / Tersedia</text>
+            <text x="768" y="289" text-anchor="middle" fill="#1E3A8A" font-size="10">Transaksi Atomik + Audit Log</text>
+
+            <line x1="515" y1="319" x2="515" y2="345" stroke="#1D4ED8" stroke-width="2" />
+            <rect x="435" y="345" width="235" height="36" rx="6" fill="#FEF2F2" stroke="#E40014" stroke-width="1.5" />
+            <text x="552" y="367" text-anchor="middle" fill="#991B1B" font-size="10.5" font-weight="700">Rusak/Hilang: Kunci Unit, JANGAN Promosi</text>
+          </svg>
+        </div>
+
+        <!-- FLOW 4: PERPANJANGAN & PEMBATALAN -->
+        <div id="flow-perpanjangan" class="flow-panel">
+          <svg viewBox="0 0 1060 340" width="100%" style="min-width: 820px; height: auto;">
+            <rect x="20" y="45" width="175" height="44" rx="22" fill="#1D4ED8" />
+            <text x="107" y="72" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">Warga Ajukan Perpanjangan</text>
+
+            <line x1="195" y1="67" x2="245" y2="67" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <rect x="248" y="40" width="190" height="54" rx="8" fill="#3B82F6" />
+            <text x="343" y="63" text-anchor="middle" fill="#FFF" font-size="11" font-weight="700">Kirim Notif &amp; Deep-Link</text>
+            <text x="343" y="79" text-anchor="middle" fill="#E0F2FE" font-size="10">Bebas Denda, Kapan Saja + Alasan</text>
+
+            <line x1="438" y1="67" x2="495" y2="67" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <polygon points="575,20 655,67 575,114 495,67" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2" />
+            <text x="575" y="63" text-anchor="middle" fill="#0F172A" font-size="11" font-weight="700">Keputusan</text>
+            <text x="575" y="77" text-anchor="middle" fill="#0F172A" font-size="11" font-weight="700">Petugas?</text>
+
+            <line x1="655" y1="67" x2="725" y2="67" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="668" y="57" fill="#059669" font-size="11" font-weight="700">Setuju / Ubah Hari</text>
+            <rect x="728" y="38" width="230" height="58" rx="8" fill="#059669" />
+            <text x="843" y="62" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">Tambah Jatuh Tempo + Commit</text>
+            <text x="843" y="79" text-anchor="middle" fill="#D1FAE5" font-size="10">Countdown pinjaman update real-time</text>
+
+            <line x1="575" y1="114" x2="575" y2="160" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <text x="585" y="142" fill="#DC2626" font-size="11" font-weight="700">Tolak</text>
+            <rect x="470" y="163" width="215" height="48" rx="24" fill="#E40014" />
+            <text x="577" y="191" text-anchor="middle" fill="#FFF" font-size="11" font-weight="700">Status 'ditolak' + Alasan + Commit</text>
+
+            <!-- Pembatalan Dua Pihak -->
+            <rect x="20" y="245" width="210" height="56" rx="8" fill="#DBEAFE" stroke="#1D4ED8" stroke-width="1.5" />
+            <text x="125" y="269" text-anchor="middle" fill="#1E3A8A" font-size="11.5" font-weight="700">Pembatalan Oleh Warga</text>
+            <text x="125" y="286" text-anchor="middle" fill="#1E3A8A" font-size="10">status = 'batal' &rarr; Lepas ke Antrean #1</text>
+
+            <rect x="275" y="245" width="265" height="56" rx="8" fill="#132B6D" />
+            <text x="407" y="269" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">Pembatalan Oleh Petugas</text>
+            <text x="407" y="286" text-anchor="middle" fill="#BFDBFE" font-size="10">Wajib Alasan: 'rusak' / 'lainnya' + Commit</text>
+          </svg>
+        </div>
+
+        <!-- FLOW 5: STOCK OPNAME & COMMIT -->
+        <div id="flow-opname" class="flow-panel">
+          <svg viewBox="0 0 1060 220" width="100%" style="min-width: 820px; height: auto;">
+            <rect x="20" y="75" width="150" height="44" rx="22" fill="#1D4ED8" />
+            <text x="95" y="102" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">1. Buka Sesi Opname</text>
+
+            <line x1="170" y1="97" x2="215" y2="97" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <rect x="218" y="68" width="195" height="58" rx="8" fill="#3B82F6" />
+            <text x="315" y="92" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">2. Fast-Scan Barcode</text>
+            <text x="315" y="109" text-anchor="middle" fill="#E0F2FE" font-size="10">Tandai: Cocok / Rusak / Salah Rak</text>
+
+            <line x1="413" y1="97" x2="458" y2="97" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <rect x="461" y="68" width="205" height="58" rx="8" fill="#DBEAFE" stroke="#1D4ED8" stroke-width="1.5" />
+            <text x="563" y="92" text-anchor="middle" fill="#1E3A8A" font-size="11.5" font-weight="700">3. Tinjau Selisih (Diff)</text>
+            <text x="563" y="109" text-anchor="middle" fill="#1E3A8A" font-size="10">Hijau Cocok | Kuning Rusak | Merah Hilang</text>
+
+            <line x1="666" y1="97" x2="711" y2="97" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <rect x="714" y="65" width="245" height="64" rx="8" fill="#132B6D" />
+            <text x="836" y="89" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">4. Commit Batch + Pesan Wajib</text>
+            <text x="836" y="106" text-anchor="middle" fill="#BFDBFE" font-size="10">Update eksemplar &amp; rekam ke log_audit</text>
+            <text x="836" y="120" text-anchor="middle" fill="#86EFAC" font-size="10">Immutable (kode_commit + diff)</text>
+          </svg>
+        </div>
+
+        <div class="flow-legend">
+          <div class="legend-item"><span class="lg-pill"></span> Titik Mulai / Akhir</div>
+          <div class="legend-item"><span class="lg-box"></span> Proses / Eksekusi Backend</div>
+          <div class="legend-item"><span class="lg-diamond"></span> Kondisi Keputusan (Validasi)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: ROLE & RBAC -->
+    <section id="roles">
+      <div class="sec-head">
+        <div>
+          <span class="sec-num">Bagian 3</span>
+          <h2>Arsitektur Peran (Role), Kewenangan, &amp; RBAC Matrix</h2>
+          <p>Satu akun tunggal dapat memiliki beberapa peran sekaligus dan berpindah workspace tanpa login ulang.</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Modul / Fitur / Aksi</th>
+              <th>Warga</th>
+              <th>Pustakawan</th>
+              <th>Admin</th>
+              <th>Admin Master</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Katalog, Detail Buku, Favorit, Rating, &amp; Ulasan</td>
+              <td><span class="badge b-success">Ya</span></td>
+              <td><span class="badge b-primary">Mode Warga</span></td>
+              <td><span class="badge b-primary">Mode Warga</span></td>
+              <td><span class="badge b-primary">Mode Warga</span></td>
+            </tr>
+            <tr>
+              <td>Ajukan Peminjaman, Antre FIFO, &amp; Perpanjangan Pribadi</td>
+              <td><span class="badge b-success">Ya (Sesuai Kelayakan)</span></td>
+              <td><span class="badge b-primary">Mode Warga</span></td>
+              <td><span class="badge b-primary">Mode Warga</span></td>
+              <td><span class="badge b-primary">Mode Warga</span></td>
+            </tr>
+            <tr>
+              <td>CRUD Master Buku, Kategori, Eksemplar, &amp; Barcode</td>
+              <td><span class="badge b-muted">Tidak</span></td>
+              <td><span class="badge b-success">Ya (Broad Access)</span></td>
+              <td><span class="badge b-success">Ya</span></td>
+              <td><span class="badge b-success">Ya</span></td>
+            </tr>
+            <tr>
+              <td>Meja Sirkulasi (Serah Terima, Kembali, Batal, Perpanjangan)</td>
+              <td><span class="badge b-muted">Tidak</span></td>
+              <td><span class="badge b-success">Ya (Sama Rata)</span></td>
+              <td><span class="badge b-success">Ya</span></td>
+              <td><span class="badge b-success">Ya</span></td>
+            </tr>
+            <tr>
+              <td>CRUD Denda, Pelunasan Manual, &amp; Koreksi Massal Multi-Warga</td>
+              <td><span class="badge b-muted">Tidak</span></td>
+              <td><span class="badge b-success">Ya (+ Commit)</span></td>
+              <td><span class="badge b-success">Ya (+ Commit)</span></td>
+              <td><span class="badge b-success">Ya (+ Commit)</span></td>
+            </tr>
+            <tr>
+              <td>Stock Opname Fast-Scan &amp; Pengesahan Selisih</td>
+              <td><span class="badge b-muted">Tidak</span></td>
+              <td><span class="badge b-success">Ya (+ Commit)</span></td>
+              <td><span class="badge b-success">Ya (+ Commit)</span></td>
+              <td><span class="badge b-success">Ya (+ Commit)</span></td>
+            </tr>
+            <tr>
+              <td>CRUD Akun Warga (Soft Delete Lulus / Hard Delete Salah Buat) &amp; Buka Blokir</td>
+              <td><span class="badge b-muted">Tidak</span></td>
+              <td><span class="badge b-muted">Tidak</span></td>
+              <td><span class="badge b-success">Ya</span></td>
+              <td><span class="badge b-success">Ya</span></td>
+            </tr>
+            <tr>
+              <td>Pengaturan Kebijakan Sistem &amp; Lihat Seluruh Audit Log</td>
+              <td><span class="badge b-muted">Tidak</span></td>
+              <td><span class="badge b-warning">Log Pribadi Saja</span></td>
+              <td><span class="badge b-success">Ya (Seluruh Sistem)</span></td>
+              <td><span class="badge b-success">Ya (Seluruh Sistem)</span></td>
+            </tr>
+            <tr>
+              <td>CRUD Akun &amp; Pencabutan Role <code>admin</code> Lain</td>
+              <td><span class="badge b-muted">Tidak</span></td>
+              <td><span class="badge b-muted">Tidak</span></td>
+              <td><span class="badge b-danger">Dilarang</span></td>
+              <td><span class="badge b-success">Eksklusif (Kebal Hapus)</span></td>
+            </tr>
+            <tr>
+              <td>Ubah / Hapus Catatan <code>log_audit</code> &amp; <code>commit</code></td>
+              <td><span class="badge b-danger">Dilarang</span></td>
+              <td><span class="badge b-danger">Dilarang</span></td>
+              <td><span class="badge b-danger">Dilarang Mutlak</span></td>
+              <td><span class="badge b-danger">Dilarang Mutlak</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 4: INTEGRASI ANTAR MODUL -->
+    <section id="integrasi">
+      <div class="sec-head">
+        <div>
+          <span class="sec-num">Bagian 4</span>
+          <h2>Integrasi Menyeluruh Antar-Fitur &amp; Aktor</h2>
+          <p>Bagaimana perubahan di satu modul langsung berdampak ke modul dan pengguna lain.</p>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <h3 style="font-size: 15px; color: var(--primary); margin-bottom: 8px;">1. Katalog &harr; Eksemplar Fisik</h3>
+          <ul class="clean-list">
+            <li>Ketersediaan di katalog dihitung real-time dari jumlah eksemplar <code>tersedia</code> per judul.</li>
+            <li>Jika hasil Stock Opname menandai unit sebagai <code>rusak</code> atau <code>hilang</code>, stok katalog warga seketika berkurang.</li>
+            <li>Tombol di Detail Buku: <strong>Kiri: Antre Buku</strong> | <strong>Kanan: Ajukan Peminjaman</strong>.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="font-size: 15px; color: var(--primary); margin-bottom: 8px;">2. Pengajuan Warga &harr; Meja Petugas</h3>
+          <ul class="clean-list">
+            <li>Pengajuan warga mengunci unit spesifik (misal <code>BK-0004</code>) menjadi <code>direservasi</code>.</li>
+            <li>Di Meja Sirkulasi, saat kartu warga dipindai, unit <code>BK-0004</code> otomatis muncul untuk dicocokkan dengan scan fisik buku.</li>
+            <li>Jika petugas memindai <code>BK-0004</code> untuk warga lain, sistem menolak mutlak.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="font-size: 15px; color: var(--primary); margin-bottom: 8px;">3. Favorit, Rating, &amp; Ulasan</h3>
+          <ul class="clean-list">
+            <li>Warga yang terkena blokir atau denda <strong>tetap bisa</strong> melihat katalog dan mengelola buku Favorit.</li>
+            <li>Rating (1-5 bintang) &amp; ulasan unik per pasangan <code>(pengguna_id, buku_id)</code>, dilengkapi voting "Berguna?".</li>
+            <li>Rata-rata rating buku dihitung langsung di server untuk katalog &amp; rekomendasi beranda.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="font-size: 15px; color: var(--primary); margin-bottom: 8px;">4. Denda &harr; Kelayakan Otomatis</h3>
+          <ul class="clean-list">
+            <li>Telat mengembalikan buku menerbitkan denda <code>belum_lunas</code> (Rp500/hari).</li>
+            <li>Selama ada denda <code>&gt; Rp0</code>, endpoint pengajuan dan antrean otomatis menolak warga tersebut.</li>
+            <li>Saat petugas mengonfirmasi pelunasan penuh atau membebaskan denda, hak pinjam warga otomatis pulih detik itu juga.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="font-size: 15px; color: var(--primary); margin-bottom: 8px;">5. Perpanjangan &harr; Email Deep-Link</h3>
+          <ul class="clean-list">
+            <li>Warga bebas denda mengajukan perpanjangan kapan saja beserta alasan (walau ada antrean).</li>
+            <li>Petugas menerima notifikasi dengan tautan langsung ke panel konfirmasi yang sudah terisi durasi ajuan.</li>
+            <li>Petugas dapat menyetujui, mengubah hari, atau menolak; countdown warga langsung terupdate.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="font-size: 15px; color: var(--primary); margin-bottom: 8px;">6. Saluran Notifikasi &amp; Cron</h3>
+          <ul class="clean-list">
+            <li><strong>Warga:</strong> In-App + Email (hanya ke email terverifikasi &amp; hormati preferensi).</li>
+            <li><strong>Pustakawan &amp; Admin:</strong> In-App saja (tanpa email).</li>
+            <li>Cron Job tiap 5 menit memproses pengajuan kedaluwarsa 24 jam, poin <em>no-show</em>, dan promosi antrean FIFO.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: ATURAN BISNIS LENGKAP -->
+    <section id="aturan">
+      <div class="sec-head">
+        <div>
+          <span class="sec-num">Bagian 5</span>
+          <h2>Ringkasan Aturan Bisnis Mutlak (Baseline V1)</h2>
+          <p>Angka dan aturan di bawah ini sudah dikunci dan tidak boleh diasumsikan berbeda di backend.</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="font-size: 15px; margin-bottom: 10px;">Aturan Sirkulasi &amp; Sanksi</h3>
+          <ul class="clean-list">
+            <li><strong>Kuota Aktif:</strong> Maksimal <strong>1 buku aktif</strong> per akun (pinjaman aktif, pengajuan <code>siap_diambil</code>, atau antrean <code>menunggu</code>).</li>
+            <li><strong>Durasi Default:</strong> <strong>7 hari kalender</strong> (dapat disesuaikan petugas di meja).</li>
+            <li><strong>Batas Pengambilan Online:</strong> <strong>24 jam</strong> sejak alokasi/promosi.</li>
+            <li><strong>Denda Keterlambatan Pengembalian:</strong> <strong>Rp500 / hari kalender / buku</strong>. Bebas denda mutlak (<code>total_denda == 0</code>) wajib sebelum pinjam baru.</li>
+            <li><strong>No-Show (Lewat 24 Jam Tidak Diambil):</strong> Tidak kena denda uang. 3x <em>no-show</em> dalam 30 hari = <strong>Blokir Sementara 7 hari</strong>. 3x blokir sementara = <strong>Blokir Permanen</strong>.</li>
+            <li><strong>Kapasitas Antrean FIFO:</strong> Maksimal 3 orang (koleksi 1-5 eksemplar), maksimal 5 orang (koleksi 6+ eksemplar).</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="font-size: 15px; margin-bottom: 10px;">Aturan Akun, Denda V1, &amp; Status UI</h3>
+          <ul class="clean-list">
+            <li><strong>Pelunasan Denda V1:</strong> Pembayaran penuh per transaksi denda (tidak ada cicilan parsial). Petugas dapat melakukan CRUD/koreksi nominal atau pembebasan massal dengan commit note.</li>
+            <li><strong>Penghapusan Akun (Hybrid):</strong> <em>Soft Delete</em> untuk siswa lulus atau akun yang memiliki histori transaksi; <em>Hard Delete</em> khusus untuk akun salah buat tanpa histori.</li>
+            <li><strong>Larangan Label Redundan:</strong> Tidak menampilkan label <code>"Akun Aktif"</code> di frontend; status aktif dikelola internal oleh backend.</li>
+            <li><strong>Batal vs Tolak:</strong> <code>batal</code> untuk pembatalan warga atau fisik rusak; <code>ditolak</code> untuk penolakan resmi petugas disertai alasan.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: AUDIT LOG COMMIT & OPNAME -->
+    <section id="audit-opname">
+      <div class="sec-head">
+        <div>
+          <span class="sec-num">Bagian 6</span>
+          <h2>Standar Audit Log (Git-Style Commit) &amp; Stock Opname</h2>
+          <p>Setiap perubahan sensitif wajib menghasilkan record commit yang bersifat append-only (tidak bisa diedit/dihapus siapa pun).</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="commit-box">
+          <div class="c-cmt">// Contoh Struktur Record Commit di tabel log_audit</div>
+          {<br />
+          &nbsp;&nbsp;<span class="c-key">"kode_commit"</span>: <span class="c-str">"7a8f1c2d"</span>,<br />
+          &nbsp;&nbsp;<span class="c-key">"pengguna_id"</span>: <span class="c-str">"usr-pustakawan-1"</span>,<br />
+          &nbsp;&nbsp;<span class="c-key">"konteks_peran"</span>: <span class="c-str">"pustakawan"</span>,<br />
+          &nbsp;&nbsp;<span class="c-key">"aksi"</span>: <span class="c-str">"KONFIRMASI_PERPANJANGAN"</span>,<br />
+          &nbsp;&nbsp;<span class="c-key">"pesan_commit"</span>: <span class="c-str">"Disetujui +3 hari karena libur sekolah"</span>,<br />
+          &nbsp;&nbsp;<span class="c-key">"tabel"</span>: <span class="c-str">"pinjaman"</span>,<br />
+          &nbsp;&nbsp;<span class="c-key">"entitas_id"</span>: <span class="c-str">"pnj-0042"</span>,<br />
+          &nbsp;&nbsp;<span class="c-key">"data_lama"</span>: { <span class="c-del">"tanggal_jatuh_tempo": "2026-11-28"</span> },<br />
+          &nbsp;&nbsp;<span class="c-key">"data_baru"</span>: { <span class="c-str">"tanggal_jatuh_tempo": "2026-12-01"</span> }<br />
+          }
+        </div>
+        <div class="card">
+          <h3 style="font-size: 15px; margin-bottom: 10px;">Aktivitas Wajib Commit &amp; Database Atomicity</h3>
+          <ul class="clean-list">
+            <li>Konfirmasi/penolakan perpanjangan &amp; pengajuan peminjaman.</li>
+            <li>Pembatalan oleh petugas (wajib alasan <code>rusak</code> / <code>lainnya</code>).</li>
+            <li>Koreksi, pembebasan, dan pelunasan denda (termasuk aksi massal multi-warga).</li>
+            <li>Pengesahan hasil <strong>Stock Opname</strong> (Fast-Scan &rarr; Diff Review &rarr; Commit Batch).</li>
+            <li>Pemberian/pencabutan role, perubahan kebijakan sistem, &amp; penghapusan akun.</li>
+            <li><strong>Wajib Transaksi Atomik:</strong> Gunakan <code>BEGIN ... COMMIT</code> + <code>SELECT ... FOR UPDATE</code> saat alokasi eksemplar &amp; promosi antrean agar bebas <em>race condition</em>.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: STANDAR BAHASA & API -->
+    <section id="kode-api">
+      <div class="sec-head">
+        <div>
+          <span class="sec-num">Bagian 7</span>
+          <h2>Standar Mutlak Bahasa Kode, Enum Database, &amp; API</h2>
+          <p>100% Bahasa Indonesia (snake_case) di seluruh database, enum, dan JSON payload. Tidak mencampur status bahasa Inggris.</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Entitas / Konteks</th>
+              <th>Istilah Lama (Dihindari)</th>
+              <th>Standar Wajib Backend &amp; DB</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Status Eksemplar</td>
+              <td><code>dibooking</code>, <code>perbaikan</code></td>
+              <td><code>tersedia</code>, <code>direservasi</code>, <code>dipinjam</code>, <code>rusak</code>, <code>hilang</code></td>
+            </tr>
+            <tr>
+              <td>Jenis &amp; Kode Reservasi</td>
+              <td><code>booking</code>, <code>kode_booking</code></td>
+              <td><code>pengajuan</code>, <code>antre</code>, <code>kode_reservasi</code>, jalur <code>reservasi_online</code></td>
+            </tr>
+            <tr>
+              <td>Status Reservasi</td>
+              <td><code>PENDING</code>, <code>ALLOCATED</code>, <code>CANCELLED</code></td>
+              <td><code>menunggu</code>, <code>siap_diambil</code>, <code>selesai</code>, <code>batal</code>, <code>ditolak</code>, <code>kedaluwarsa</code></td>
+            </tr>
+            <tr>
+              <td>Status Denda &amp; Perpanjangan</td>
+              <td><code>UNPAID</code>, <code>PAID</code>, <code>WAIVED</code></td>
+              <td>Denda: <code>belum_lunas</code>, <code>lunas</code>, <code>dibebaskan</code> &bull; Ajuan: <code>menunggu</code>, <code>disetujui</code>, <code>ditolak</code></td>
+            </tr>
+            <tr>
+              <td>Status Opname &amp; Antrean Email</td>
+              <td><code>QUEUED</code>, <code>SENT</code>, <code>FAILED</code></td>
+              <td>Opname: <code>draf</code>, <code>berjalan</code>, <code>selesai_commit</code>, <code>dibatalkan</code> &bull; Email: <code>antre_kirim</code>, <code>terkirim</code>, <code>gagal</code>, <code>coba_ulang</code></td>
+            </tr>
+            <tr>
+              <td>Format Respons Error API</td>
+              <td>JSON error bebas</td>
+              <td><strong>RFC 7807 / 9457</strong> (<code>application/problem+json</code>) dengan kode error uppercase Indonesia (<code>EKSEMPLAR_DIRESERVASI_ORANG_LAIN</code>)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout" style="margin-top: 16px;">
+        <strong>Catatan Penting Teknis untuk Migrasi DB:</strong> Aktifkan kebijakan <code>CREATE POLICY</code> yang tepat untuk tabel dengan Row Level Security (RLS), pastikan koneksi aplikasi memakai role terotorisasi, dan lindungi <code>log_audit</code> dengan mencabut izin <code>UPDATE</code> &amp; <code>DELETE</code> di level SQL.
+      </div>
+    </section>
+
+    <footer class="footer">
+      <strong>BILIK — SMK TI BAZMA (Yayasan BAZMA Pertamina)</strong> &bull; Dokumen Acuan Terpadu untuk Tim Backend &bull; Diperbarui 25 November 2026
+    </footer>
+  </main>
+
+  <script>
+    const WORKSPACES = {
+      warga: {
+        roleLabel: "Muhammad Fadhil (Warga / Siswa)",
+        initials: "MF",
+        topbar: "BILIK — MODE WARGA (PENGALAMAN UTAMA)",
+        title: "Beranda & Aktivitas Pemustaka",
+        subtitle: "Eksplorasi katalog, pengajuan peminjaman 24 jam, antrean FIFO, favorit, rating, dan pinjaman aktif.",
+        cta: "Jelajahi Katalog Buku",
+        menus: [
+          { name: "Beranda & Katalog", active: true },
+          { name: "Antrean & Pengajuan", active: false },
+          { name: "Pinjaman Saya", active: false },
+          { name: "Buku Favorit", active: false },
+          { name: "Profil & Kartu Digital", active: false },
+          { name: "Preferensi Notifikasi Email", active: false }
+        ],
+        kpis: [
+          { title: "Pinjaman Aktif", val: "1 / 1", sub: "Batas maksimal 1 buku", color: "#1D4ED8", icon: "B" },
+          { title: "Pengajuan Siap Diambil", val: "1", sub: "Countdown 23:59:12", color: "#D97706", icon: "W" },
+          { title: "Tagihan Denda", val: "Rp 0", sub: "Bebas denda untuk meminjam", color: "#059669", icon: "D" },
+          { title: "Buku Favorit", val: "4", sub: "Koleksi tersimpan", color: "#093A71", icon: "F" }
+        ]
+      },
+      pustakawan: {
+        roleLabel: "Ibu Nurul Hidayah (Pustakawan)",
+        initials: "NH",
+        topbar: "PERPUSTAKAAN SMK TI BAZMA — WORKSPACE PUSTAKAWAN",
+        title: "Dashboard Operasional Pustakawan",
+        subtitle: "Ringkasan sirkulasi harian, koleksi eksemplar fisik, pengajuan siap diambil, dan Stock Opname.",
+        cta: "Buka Meja Sirkulasi",
+        menus: [
+          { name: "Dashboard", active: true },
+          { name: "Meja Sirkulasi", active: false },
+          { name: "Pengajuan & Antrean", active: false },
+          { name: "Koleksi & Master Buku", active: false },
+          { name: "Eksemplar & Barcode", active: false },
+          { name: "Stock Opname (Fast-Scan)", active: false },
+          { name: "Denda & Pelunasan", active: false },
+          { name: "Ajuan Perpanjangan", active: false },
+          { name: "Aktivitas Saya", active: false },
+          { name: "Manajemen Role (Terkunci)", active: false, locked: true }
+        ],
+        kpis: [
+          { title: "Total Katalog", val: "364", sub: "Judul terdaftar", color: "#1D4ED8", icon: "K" },
+          { title: "Total Eksemplar", val: "483", sub: "Unit fisik ber-barcode", color: "#D97706", icon: "E" },
+          { title: "Pengajuan Menunggu", val: "6", sub: "Siap diambil (24 jam)", color: "#059669", icon: "P" },
+          { title: "Pinjaman Terlambat", val: "3", sub: "Perlu tindak lanjut", color: "#E40014", icon: "T" }
+        ]
+      },
+      admin: {
+        roleLabel: "Pak Ridwan (Admin)",
+        initials: "PR",
+        topbar: "PERPUSTAKAAN SMK TI BAZMA — WORKSPACE ADMIN",
+        title: "Dashboard Manajemen & Sistem Admin",
+        subtitle: "Akses penuh operasional Pustakawan ditambah CRUD warga, pengaturan kebijakan, dan audit log seluruh sistem.",
+        cta: "Cetak Laporan Bulanan",
+        menus: [
+          { name: "Dashboard", active: true },
+          { name: "Meja Sirkulasi", active: false },
+          { name: "Koleksi & Eksemplar", active: false },
+          { name: "Stock Opname", active: false },
+          { name: "Keanggotaan & Buka Blokir", active: false },
+          { name: "Denda & Koreksi Massal", active: false },
+          { name: "Audit Log & Commit History", active: false },
+          { name: "Pengaturan Kebijakan", active: false },
+          { name: "CRUD Akun Admin (Khusus Master)", active: false, locked: true }
+        ],
+        kpis: [
+          { title: "Total Katalog", val: "364", sub: "Judul terdaftar", color: "#1D4ED8", icon: "K" },
+          { title: "Total Eksemplar", val: "483", sub: "Eksemplar koleksi", color: "#D97706", icon: "E" },
+          { title: "Total Peminjaman", val: "45", sub: "Transaksi bulan ini", color: "#059669", icon: "P" },
+          { title: "Jumlah Anggota", val: "512", sub: "Siswa, guru, & staf", color: "#0891B2", icon: "A" }
+        ]
+      },
+      master: {
+        roleLabel: "Admin Master (Sistem Utama)",
+        initials: "AM",
+        topbar: "PERPUSTAKAAN SMK TI BAZMA — WORKSPACE ADMIN MASTER",
+        title: "Pusat Kendali Tertinggi (Admin Master)",
+        subtitle: "Memiliki seluruh wewenang Admin plus halaman eksklusif pengelolaan akun Admin lainnya. Kebal dihapus.",
+        cta: "Kelola Akun Admin",
+        menus: [
+          { name: "Dashboard Sistem", active: true },
+          { name: "Manajemen Akun Admin (Eksklusif)", active: false },
+          { name: "Pemberian / Pencabutan Role", active: false },
+          { name: "Audit Log (Immutable)", active: false },
+          { name: "Pengaturan Kebijakan Global", active: false },
+          { name: "Seluruh Fitur Sirkulasi & Koleksi", active: false },
+          { name: "Stock Opname & Denda", active: false }
+        ],
+        kpis: [
+          { title: "Akun Admin Aktif", val: "3", sub: "Dikelola eksklusif oleh Master", color: "#132B6D", icon: "M" },
+          { title: "Akun Pustakawan", val: "4", sub: "Permission operasional merata", color: "#1D4ED8", icon: "P" },
+          { title: "Total Commit Log", val: "1.284", sub: "Append-only & terproteksi", color: "#059669", icon: "L" },
+          { title: "Status Keamanan", val: "Kebal", sub: "Master tidak bisa dihapus", color: "#093A71", icon: "S" }
+        ]
+      }
+    };
+
+    function switchWorkspace(key, btn) {
+      document.querySelectorAll('.ws-tab').forEach(t => t.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      const d = WORKSPACES[key];
+      const container = document.getElementById('ws-preview-body');
+
+      container.innerHTML = `
+        <aside class="ws-sidebar">
+          <div>
+            <div class="ws-sb-brand">
+              <div class="ws-sb-logo">B</div>
+              <div>
+                <div style="font-size:13px;font-weight:800;color:var(--heading);">BILIK</div>
+                <div style="font-size:10.5px;color:var(--muted);">SMK TI BAZMA</div>
+              </div>
+            </div>
+            <div class="ws-menu">
+              ${d.menus.map(m => `
+                <div class="ws-menu-item ${m.active ? 'active' : ''} ${m.locked ? 'locked' : ''}">
+                  <span>${m.name}</span>
+                  ${m.locked ? '<span style="font-size:10px;">&#128274;</span>' : ''}
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div class="ws-sb-footer">
+            <div class="ws-avatar">${d.initials}</div>
+            <div>
+              <div style="font-size:12px;font-weight:700;color:var(--heading);">${d.roleLabel}</div>
+              <div style="font-size:10.5px;color:var(--primary);font-weight:600;">Ganti Workspace &harr;</div>
+            </div>
+          </div>
+        </aside>
+        <div class="ws-main">
+          <div class="ws-topbar">
+            <span><strong>${d.topbar}</strong></span>
+            <span>Rabu, 25 November 2026 &bull; WIB</span>
+          </div>
+          <div class="ws-content">
+            <div class="ws-header-row">
+              <div>
+                <h3 style="font-size:20px;font-weight:800;color:var(--heading);">${d.title}</h3>
+                <p style="font-size:12.5px;color:var(--muted);">${d.subtitle}</p>
+              </div>
+              <button type="button" style="background:var(--primary);color:#FFF;border:none;border-radius:8px;padding:9px 14px;font-size:12px;font-weight:700;cursor:default;">
+                ${d.cta}
+              </button>
+            </div>
+            <div class="ws-kpi-grid">
+              ${d.kpis.map(k => `
+                <div class="kpi-card">
+                  <div>
+                    <div class="kpi-title">${k.title}</div>
+                    <div class="kpi-val">${k.val}</div>
+                    <div class="kpi-sub">${k.sub}</div>
+                  </div>
+                  <div class="kpi-icon" style="background:${k.color};">${k.icon}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function switchFlow(panelId, btn) {
+      document.querySelectorAll('.flow-tab').forEach(t => t.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      document.querySelectorAll('.flow-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById(panelId).classList.add('active');
+    }
+
+    switchWorkspace('pustakawan');
+  </script>
+</body>
+</html>

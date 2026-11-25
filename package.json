@@ -1,0 +1,20 @@
+{
+  "name": "perpustakaan-smk-ti-bazma",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sistem Informasi Perpustakaan Digital SMK TI Bazma - Yayasan BAZMA Pertamina",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix frontend run start",
+    "lint": "npm --prefix frontend run lint",
+    "typecheck": "npm --prefix frontend run typecheck",
+    "test": "npm --prefix frontend run test",
+    "e2e": "npm --prefix frontend run e2e",
+    "api:types": "npm --prefix frontend run api:types",
+    "check:contrast": "node scripts/check-contrast.ts",
+    "db:up": "dbmate -d infra/db/migrations -s infra/db/schema.sql up",
+    "db:down": "dbmate -d infra/db/migrations -s infra/db/schema.sql down",
+    "db:seed": "node infra/db/seeds/seed.js"
+  }
+}

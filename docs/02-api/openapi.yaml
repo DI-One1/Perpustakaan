@@ -1,0 +1,1155 @@
+openapi: 3.1.0
+info:
+  title: API Perpustakaan Digital SMK TI Bazma ("BILIK")
+  description: |
+    Kontrak API resmi sistem informasi perpustakaan digital BILIK - SMK TI Bazma di bawah Yayasan BAZMA.
+    Mencakup sirkulasi warga (online booking, antrean FIFO, perpanjangan mandiri, denda) dan meja sirkulasi staf pustakawan.
+    Menggunakan format error terstandarisasi RFC 9457 (application/problem+json).
+  version: 1.0.0
+servers:
+  - url: /api/v1
+    description: Route Handlers Sementara Next.js / Server Backend Utama
+
+paths:
+  # ============================================================================
+  # 1. AUTENTIKASI & SESI
+  # ============================================================================
+  /auth/masuk:
+    post:
+      summary: Masuk ke Sistem (Login)
+      description: Otentikasi warga atau pustakawan/admin menggunakan Nomor Induk (NISN/NIP) dan kata sandi. Mengembalikan cookie httpOnly dan data sesi.
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Berhasil masuk ke sistem
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+        '422':
+          $ref: '#/components/responses/ProblemValidation'
+
+  /auth/keluar:
+    post:
+      summary: Keluar dari Sistem (Logout)
+      description: Menghapus token sesi dari basis data dan mengosongkan cookie autentikasi.
+      operationId: logout
+      responses:
+        '200':
+          description: Berhasil keluar
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sukses:
+                    type: boolean
+                    example: true
+                  pesan:
+                    type: string
+                    example: "Sesi berhasil diakhiri."
+
+  /auth/me:
+    get:
+      summary: Informasi Profil Pengguna Aktif
+      description: Mengambil data pengguna yang sedang login berdasarkan cookie sesi, termasuk status denda aktif, blokir, dan reservasi aktif.
+      operationId: getMe
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PenggunaDetail'
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+
+  # ============================================================================
+  # 2. KATALOG & DETAIL BUKU
+  # ============================================================================
+  /kategori:
+    get:
+      summary: Daftar Kategori Buku
+      description: Mengambil seluruh daftar kategori buku yang aktif beserta jumlah koleksinya.
+      operationId: getKategori
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Kategori'
+
+  /katalog:
+    get:
+      summary: Pencarian & Eksplorasi Katalog Buku
+      description: Menampilkan daftar buku dengan dukungan pencarian judul/penulis/ISBN, filter kategori, status ketersediaan, serta sorting.
+      operationId: getKatalog
+      parameters:
+        - name: q
+          in: query
+          description: Kata kunci pencarian judul, penulis, atau ISBN
+          schema:
+            type: string
+        - name: kategori
+          in: query
+          description: Slug kategori buku (misal teknologi-sija, keislaman)
+          schema:
+            type: string
+        - name: filter
+          in: query
+          description: Filter khusus (baru, populer, pilihan)
+          schema:
+            type: string
+            enum: [baru, populer, pilihan]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KatalogResponse'
+
+  /buku/{id}:
+    get:
+      summary: Detail Informasi Buku
+      description: Mengambil data lengkap satu judul buku termasuk ringkasan eksemplar dan sinopsis.
+      operationId: getBukuById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BukuDetail'
+        '404':
+          $ref: '#/components/responses/ProblemNotFound'
+
+  /buku/{id}/kelayakan:
+    get:
+      summary: Cek Kelayakan Peminjaman/Booking Pengguna
+      description: |
+        Memeriksa apakah warga yang sedang login berhak mengajukan booking atau antrean pada buku ini.
+        Memeriksa aturan: bebas pinjaman aktif, bebas denda aktif, bebas sanksi blokir, dan sisa kuota antrean.
+      operationId: checkKelayakanBuku
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KelayakanResponse'
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+        '404':
+          $ref: '#/components/responses/ProblemNotFound'
+
+  # ============================================================================
+  # 3. RESERVASI (BOOKING & ANTREAN FIFO)
+  # ============================================================================
+  /reservasi/saya:
+    get:
+      summary: Status Reservasi Aktif Warga
+      description: Mengambil informasi reservasi aktif milik pengguna (baik booking yang siap diambil dengan sisa waktu tenggat, maupun posisi antrean FIFO).
+      operationId: getReservasiSaya
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    anyOf:
+                      - $ref: '#/components/schemas/ReservasiDetail'
+                      - type: 'null'
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+
+  /reservasi/booking:
+    post:
+      summary: Ajukan Booking Eksemplar Tersedia
+      description: |
+        Mengajukan booking online untuk buku yang memiliki eksemplar berstatus 'tersedia'.
+        Menjamin konkurensi (FOR UPDATE SKIP LOCKED). Buku otomatis disisihkan di rak booking selama 24 jam.
+      operationId: createBooking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [buku_id]
+              properties:
+                buku_id:
+                  type: string
+      responses:
+        '201':
+          description: Booking berhasil dibuat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservasiDetail'
+        '400':
+          $ref: '#/components/responses/ProblemConflict'
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+        '409':
+          $ref: '#/components/responses/ProblemConflict'
+
+  /reservasi/antre:
+    post:
+      summary: Masuk Antrean Online (FIFO)
+      description: |
+        Mengantre judul buku yang seluruh eksemplarnya sedang dipinjam atau dibooking.
+        Sistem menghitung posisi antrean secara adil (FIFO). Jika stok tersedia kelak, sistem otomatis menaikkan antrean #1 menjadi booking.
+      operationId: createAntrean
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [buku_id]
+              properties:
+                buku_id:
+                  type: string
+      responses:
+        '201':
+          description: Berhasil masuk ke nomor antrean
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservasiDetail'
+        '400':
+          $ref: '#/components/responses/ProblemConflict'
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+        '409':
+          $ref: '#/components/responses/ProblemConflict'
+
+  /reservasi/{id}/batal:
+    post:
+      summary: Batalkan Booking atau Antrean Aktif
+      description: Membatalkan reservasi secara sukarela sebelum batas waktu berakhir. Jika yang dibatalkan adalah booking, eksemplar otomatis dialihkan ke antrean berikutnya atau kembali ke stok umum.
+      operationId: cancelReservasi
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sukses:
+                    type: boolean
+                    example: true
+                  pesan:
+                    type: string
+                    example: "Reservasi berhasil dibatalkan."
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+        '404':
+          $ref: '#/components/responses/ProblemNotFound'
+
+  # ============================================================================
+  # 4. PINJAMAN, PERPANJANGAN & DENDA
+  # ============================================================================
+  /pinjaman/saya:
+    get:
+      summary: Riwayat & Pinjaman Aktif Warga
+      description: Mengambil pinjaman buku yang sedang aktif (beserta hitungan sisa hari atau hari terlambat) dan riwayat pinjaman masa lalu.
+      operationId: getPinjamanSaya
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PinjamanSayaResponse'
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+
+  /perpanjangan:
+    post:
+      summary: Ajukan Perpanjangan Pinjaman
+      description: |
+        Mengajukan perpanjangan durasi pinjaman untuk buku yang sedang aktif dipinjam.
+        Wajib menyertakan alasan. Pustakawan akan memproses dan dapat menyesuaikan durasi hari sebelum konfirmasi.
+      operationId: createAjuanPerpanjangan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AjuanPerpanjanganRequest'
+      responses:
+        '201':
+          description: Ajuan perpanjangan berhasil dikirim
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AjuanPerpanjanganDetail'
+        '400':
+          $ref: '#/components/responses/ProblemConflict'
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+
+  /denda/saya:
+    get:
+      summary: Daftar Tagihan & Riwayat Denda Warga
+      description: Mengambil seluruh riwayat denda keterlambatan warga, baik yang masih berstatus belum lunas maupun yang sudah lunas/dibebaskan.
+      operationId: getDendaSaya
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_belum_lunas:
+                    type: integer
+                    example: 1500
+                  riwayat:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DendaDetail'
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+
+  # ============================================================================
+  # 5. FAVORIT, PENGUMUMAN & NOTIFIKASI
+  # ============================================================================
+  /favorit:
+    get:
+      summary: Daftar Buku Favorit Warga
+      description: Mengambil daftar buku yang disimpan ke daftar favorit oleh pengguna yang sedang login.
+      operationId: getFavorit
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BukuRingkas'
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+
+  /favorit/{buku_id}:
+    post:
+      summary: Tambahkan Buku ke Favorit
+      operationId: addFavorit
+      parameters:
+        - name: buku_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sukses:
+                    type: boolean
+                    example: true
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+    delete:
+      summary: Hapus Buku dari Favorit
+      operationId: removeFavorit
+      parameters:
+        - name: buku_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sukses:
+                    type: boolean
+                    example: true
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+
+  /pengumuman:
+    get:
+      summary: Daftar Pengumuman & Hero Banner
+      description: Mengambil pengumuman aktif dan banner literasi sekolah untuk halaman utama.
+      operationId: getPengumuman
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Pengumuman'
+
+  /notifikasi:
+    get:
+      summary: Notifikasi Masuk Pengguna
+      description: Mengambil daftar pemberitahuan sirkulasi (pengingat tenggat booking, jatuh tempo, denda).
+      operationId: getNotifikasi
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  unread_count:
+                    type: integer
+                    example: 1
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Notifikasi'
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+
+  /notifikasi/{id}/baca:
+    patch:
+      summary: Tandai Notifikasi Telah Dibaca
+      operationId: markNotifikasiRead
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sukses:
+                    type: boolean
+                    example: true
+
+  # ============================================================================
+  # 6. MEJA SIRKULASI PUSTAKAWAN (STAFF DESK ENDPOINTS)
+  # ============================================================================
+  /staff/sirkulasi/scan-warga:
+    post:
+      summary: Validasi Identitas Warga di Meja Pustakawan
+      description: |
+        Dipanggil saat pustakawan melakukan scan kartu anggota atau input manual NISN/identitas warga.
+        Mengembalikan ringkasan data warga, kelayakan pinjam, status denda aktif, pinjaman berjalan, atau ajuan booking siap diambil.
+      operationId: staffScanWarga
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nomor_induk]
+              properties:
+                nomor_induk:
+                  type: string
+                  description: NISN untuk siswa atau NIP/ID untuk guru/staf
+                  example: "0061234567"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffScanWargaResult'
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+        '403':
+          $ref: '#/components/responses/ProblemForbidden'
+        '404':
+          $ref: '#/components/responses/ProblemNotFound'
+
+  /staff/sirkulasi/scan-eksemplar:
+    post:
+      summary: Scan Barcode Eksemplar Buku Fisik
+      description: |
+        Dipanggil saat pustakawan melakukan scan barcode eksemplar fisik buku (`EXM-xxxx-xx`).
+        Memeriksa apakah eksemplar berstatus 'tersedia' untuk dipinjam langsung, atau berstatus 'dibooking' oleh warga tertentu.
+        Jika seluruh stok umum kosong/terbooking, sistem menampilkan notifikasi stok penuh dan menolak pengisian pinjam offline.
+      operationId: staffScanEksemplar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nomor_induk_eksemplar]
+              properties:
+                nomor_induk_eksemplar:
+                  type: string
+                  example: "EXM-0051-03"
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffScanEksemplarResult'
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+        '403':
+          $ref: '#/components/responses/ProblemForbidden'
+        '404':
+          $ref: '#/components/responses/ProblemNotFound'
+
+  /staff/sirkulasi/konfirmasi-pinjam:
+    post:
+      summary: Konfirmasi Peminjaman Buku di Meja Pustakawan
+      description: |
+        Menyelesaikan transaksi peminjaman (baik alur Booking Online maupun Pinjam Langsung Offline).
+        Pustakawan dapat menyesuaikan durasi pinjam hari (default 7 hari) via tombol stepper -/+.
+      operationId: staffKonfirmasiPinjam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffKonfirmasiPinjamRequest'
+      responses:
+        '201':
+          description: Transaksi peminjaman berhasil dicatat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffTransaksiPinjamResult'
+        '400':
+          $ref: '#/components/responses/ProblemConflict'
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+        '403':
+          $ref: '#/components/responses/ProblemForbidden'
+
+  /staff/sirkulasi/kembali:
+    post:
+      summary: Proses Pengembalian Buku Fisik
+      description: |
+        Pustakawan menerima pengembalian buku fisik.
+        Sistem otomatis menghitung keterlambatan berdasarkan kalender Asia/Jakarta.
+        Jika terlambat, otomatis menerbitkan data denda belum lunas dan menghalangi peminjaman baru sampai dilunasi.
+        Jika ada antrean online FIFO untuk judul ini, antrean terdepan otomatis dinaikkan statusnya menjadi booking siap diambil.
+      operationId: staffKembalikanBuku
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nomor_induk_eksemplar]
+              properties:
+                nomor_induk_eksemplar:
+                  type: string
+                  example: "EXM-0051-01"
+                kondisi:
+                  type: string
+                  enum: [baik, rusak, hilang]
+                  default: baik
+                catatan:
+                  type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffKembaliResult'
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+        '403':
+          $ref: '#/components/responses/ProblemForbidden'
+
+  /staff/denda/{id}/bayar:
+    post:
+      summary: Pelunasan Denda Keterlambatan di Meja Pustakawan
+      description: Pustakawan memverifikasi pelunasan denda tunai/qris, membuka kembali kelayakan pinjam warga.
+      operationId: staffPelunasanDenda
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sukses:
+                    type: boolean
+                    example: true
+                  pesan:
+                    type: string
+                    example: "Denda berhasil dilunasi. Hak sirkulasi warga telah dipulihkan."
+        '401':
+          $ref: '#/components/responses/ProblemUnauthorized'
+        '403':
+          $ref: '#/components/responses/ProblemForbidden'
+
+components:
+  # ============================================================================
+  # SCHEMAS
+  # ============================================================================
+  schemas:
+    LoginRequest:
+      type: object
+      required: [nomor_induk, password]
+      properties:
+        nomor_induk:
+          type: string
+          example: "0061234567"
+        password:
+          type: string
+          format: password
+          example: "Bilik2026!"
+
+    AuthResponse:
+      type: object
+      properties:
+        sukses:
+          type: boolean
+          example: true
+        pengguna:
+          $ref: '#/components/schemas/PenggunaDetail'
+
+    PenggunaDetail:
+      type: object
+      properties:
+        id:
+          type: string
+        nomor_induk:
+          type: string
+        nama:
+          type: string
+        email:
+          type: string
+          nullable: true
+        peran:
+          type: string
+          enum: [admin, pustakawan, warga]
+        jenis_warga:
+          type: string
+          enum: [siswa, guru, staf]
+        kelas_atau_unit:
+          type: string
+        is_blocked:
+          type: boolean
+        blocked_until:
+          type: string
+          format: date-time
+          nullable: true
+        denda_aktif:
+          type: integer
+          example: 0
+        foto_url:
+          type: string
+          nullable: true
+
+    Kategori:
+      type: object
+      properties:
+        id:
+          type: string
+        nama:
+          type: string
+        slug:
+          type: string
+        deskripsi:
+          type: string
+          nullable: true
+        jumlah_judul:
+          type: integer
+          example: 22
+
+    BukuRingkas:
+      type: object
+      properties:
+        id:
+          type: string
+        judul:
+          type: string
+        penulis:
+          type: string
+        isbn:
+          type: string
+        nomor_panggil:
+          type: string
+        kategori_nama:
+          type: string
+        cover_url:
+          type: string
+          nullable: true
+        total_eksemplar:
+          type: integer
+        eksemplar_tersedia:
+          type: integer
+        eksemplar_dibooking:
+          type: integer
+        jumlah_antrean:
+          type: integer
+        maks_antrean:
+          type: integer
+
+    BukuDetail:
+      allOf:
+        - $ref: '#/components/schemas/BukuRingkas'
+        - type: object
+          properties:
+            penerbit:
+              type: string
+            tahun:
+              type: integer
+            sinopsis:
+              type: string
+            eksemplar_dipinjam:
+              type: integer
+
+    KatalogResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        per_page:
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/BukuRingkas'
+
+    KelayakanResponse:
+      type: object
+      properties:
+        is_eligible:
+          type: boolean
+          example: true
+        aksi_yang_tersedia:
+          type: string
+          enum: [booking, antre, tidak_tersedia]
+        alasan_penolakan:
+          type: string
+          nullable: true
+          example: "Anda masih memiliki pinjaman aktif (maksimal 1 buku per warga)."
+        stok_tersedia:
+          type: integer
+        antrean_saat_ini:
+          type: integer
+        maks_antrean:
+          type: integer
+
+    ReservasiDetail:
+      type: object
+      properties:
+        id:
+          type: string
+        jenis:
+          type: string
+          enum: [booking, antre]
+        status:
+          type: string
+          enum: [menunggu, siap_diambil, selesai, batal, kedaluwarsa]
+        kode_booking:
+          type: string
+          nullable: true
+          example: "BKG-202611-0042"
+        buku:
+          $ref: '#/components/schemas/BukuRingkas'
+        nomor_induk_eksemplar:
+          type: string
+          nullable: true
+        posisi_antrean:
+          type: integer
+          nullable: true
+        waktu_tenggat:
+          type: string
+          format: date-time
+          nullable: true
+        sisa_waktu_teks:
+          type: string
+          nullable: true
+          example: "16 jam tersisa"
+
+    PinjamanSayaResponse:
+      type: object
+      properties:
+        pinjaman_aktif:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+            buku:
+              $ref: '#/components/schemas/BukuRingkas'
+            nomor_induk_eksemplar:
+              type: string
+            tanggal_pinjam:
+              type: string
+              format: date
+            tanggal_jatuh_tempo:
+              type: string
+              format: date
+            durasi_hari:
+              type: integer
+            hari_terlambat:
+              type: integer
+              default: 0
+            denda_berjalan:
+              type: integer
+              default: 0
+            boleh_perpanjang:
+              type: boolean
+        riwayat:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              buku_judul:
+                type: string
+              tanggal_pinjam:
+                type: string
+                format: date
+              tanggal_kembali:
+                type: string
+                format: date
+                nullable: true
+              status:
+                type: string
+
+    AjuanPerpanjanganRequest:
+      type: object
+      required: [pinjaman_id, alasan]
+      properties:
+        pinjaman_id:
+          type: string
+        alasan:
+          type: string
+          description: Alasan wajib mengapa membutuhkan perpanjangan pinjaman
+          example: "Buku masih dibutuhkan sebagai referensi penulisan laporan UKK TEFA."
+        durasi_hari_diminta:
+          type: integer
+          default: 7
+
+    AjuanPerpanjanganDetail:
+      type: object
+      properties:
+        id:
+          type: string
+        pinjaman_id:
+          type: string
+        alasan:
+          type: string
+        durasi_hari_diminta:
+          type: integer
+        status:
+          type: string
+          enum: [menunggu, disetujui, ditolak]
+
+    DendaDetail:
+      type: object
+      properties:
+        id:
+          type: string
+        buku_judul:
+          type: string
+        hari_terlambat:
+          type: integer
+        tarif_per_hari:
+          type: integer
+        total_nominal:
+          type: integer
+        status:
+          type: string
+          enum: [belum_lunas, lunas, dibebaskan]
+        created_at:
+          type: string
+          format: date-time
+
+    Pengumuman:
+      type: object
+      properties:
+        id:
+          type: string
+        judul:
+          type: string
+        ringkasan:
+          type: string
+          nullable: true
+        isi:
+          type: string
+        tag:
+          type: string
+        warna_tag:
+          type: string
+        gambar_url:
+          type: string
+          nullable: true
+        tanggal_publikasi:
+          type: string
+          format: date
+
+    Notifikasi:
+      type: object
+      properties:
+        id:
+          type: string
+        judul:
+          type: string
+        pesan:
+          type: string
+        tipe:
+          type: string
+          enum: [info, peringatan, darurat]
+        tautan:
+          type: string
+          nullable: true
+        is_read:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+
+    StaffScanWargaResult:
+      type: object
+      properties:
+        warga:
+          $ref: '#/components/schemas/PenggunaDetail'
+        boleh_pinjam:
+          type: boolean
+        alasan_tidak_boleh:
+          type: string
+          nullable: true
+        pinjaman_berjalan:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+            buku_judul:
+              type: string
+            tanggal_jatuh_tempo:
+              type: string
+              format: date
+            hari_terlambat:
+              type: integer
+        booking_siap_diambil:
+          $ref: '#/components/schemas/ReservasiDetail'
+
+    StaffScanEksemplarResult:
+      type: object
+      properties:
+        eksemplar_id:
+          type: string
+        nomor_induk_eksemplar:
+          type: string
+        status:
+          type: string
+          enum: [tersedia, dibooking, dipinjam, rusak, hilang]
+        buku:
+          $ref: '#/components/schemas/BukuDetail'
+        is_stok_penuh_atau_habis:
+          type: boolean
+          description: Bernilai true jika stok umum habis atau seluruh eksemplar terbooking
+        dibooking_oleh_pengguna_id:
+          type: string
+          nullable: true
+
+    StaffKonfirmasiPinjamRequest:
+      type: object
+      required: [pengguna_id, eksemplar_id, jalur]
+      properties:
+        pengguna_id:
+          type: string
+        eksemplar_id:
+          type: string
+        jalur:
+          type: string
+          enum: [booking_online, langsung_offline]
+        durasi_hari:
+          type: integer
+          default: 7
+          description: Durasi pinjam yang disetujui pustakawan (default 7 hari, diubah via stepper)
+
+    StaffTransaksiPinjamResult:
+      type: object
+      properties:
+        id:
+          type: string
+        buku_judul:
+          type: string
+        nomor_induk_eksemplar:
+          type: string
+        tanggal_pinjam:
+          type: string
+          format: date
+        tanggal_jatuh_tempo:
+          type: string
+          format: date
+        durasi_hari:
+          type: integer
+        petugas_nama:
+          type: string
+
+    StaffKembaliResult:
+      type: object
+      properties:
+        id:
+          type: string
+        buku_judul:
+          type: string
+        tanggal_kembali:
+          type: string
+          format: date
+        hari_terlambat:
+          type: integer
+        denda_nominal:
+          type: integer
+        denda_id:
+          type: string
+          nullable: true
+        antrean_berikutnya_dinaikkan:
+          type: boolean
+          description: Bernilai true jika ada antrean online warga yang otomatis naik menjadi booking
+
+    # ============================================================================
+    # RFC 9457 PROBLEM DETAILS FOR HTTP APIS (Standard Error Response)
+    # ============================================================================
+    ProblemDetails:
+      type: object
+      required: [type, title, status, code]
+      properties:
+        type:
+          type: string
+          format: uri
+          example: "https://bilik.smktibazma.sch.id/problems/aturan-sirkulasi"
+        title:
+          type: string
+          example: "Permintaan Ditolak Aturan Sirkulasi"
+        status:
+          type: integer
+          example: 409
+        code:
+          type: string
+          description: Kode error unik dan stabil untuk ditangani oleh klien
+          enum:
+            - UNAUTHORIZED
+            - FORBIDDEN
+            - NOT_FOUND
+            - VALIDATION_ERROR
+            - PINJAMAN_AKTIF
+            - RESERVASI_AKTIF
+            - DENDA_AKTIF
+            - DIBLOKIR_SEMENTARA
+            - DIBLOKIR_PERMANEN
+            - ANTREAN_PENUH
+            - STOK_HABIS
+            - EKSEMPLAR_DIBOOKING_ORANG_LAIN
+            - DURASI_TIDAK_VALID
+          example: "PINJAMAN_AKTIF"
+        detail:
+          type: string
+          example: "Anda masih memiliki 1 pinjaman buku aktif yang belum dikembalikan."
+        instance:
+          type: string
+          example: "/api/v1/reservasi/booking"
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+
+  # ============================================================================
+  # STANDARD RESPONSES
+  # ============================================================================
+  responses:
+    ProblemUnauthorized:
+      description: Sesi tidak sah atau kredensial salah
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    ProblemForbidden:
+      description: Akses ditolak (memerlukan peran Pustakawan / Admin)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    ProblemNotFound:
+      description: Entitas data tidak ditemukan
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    ProblemValidation:
+      description: Input gagal divalidasi skema batas sistem
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    ProblemConflict:
+      description: Penolakan aturan bisnis sirkulasi (kuota penuh, ada denda, dll)
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'

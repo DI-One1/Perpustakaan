@@ -1,0 +1,10 @@
+node_modules/
+.next/
+.env
+.env.local
+*.log
+vendor/
+bin/
+obj/
+.DS_Store
+data-warga/

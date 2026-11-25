@@ -1,0 +1,59 @@
+{
+  "tabsNavigation": {
+    "dashboard": {
+      "expected": "Dashboard",
+      "actual": "RINGKASAN",
+      "passed": false
+    },
+    "riwayat": {
+      "expected": "Riwayat Membaca",
+      "actual": "RINGKASAN",
+      "passed": false
+    },
+    "peminjaman": {
+      "expected": "Peminjaman Saya",
+      "actual": "RINGKASAN",
+      "passed": false
+    },
+    "favorit": {
+      "expected": "Buku Favorit",
+      "actual": "RINGKASAN",
+      "passed": false
+    },
+    "data-pribadi": {
+      "expected": "Data Pribadi",
+      "actual": "RINGKASAN",
+      "passed": false
+    },
+    "pengaturan": {
+      "expected": "Pengaturan Akun",
+      "actual": "RINGKASAN",
+      "passed": false
+    },
+    "blokir": {
+      "expected": "Daftar Blokir",
+      "actual": "RINGKASAN",
+      "passed": false
+    }
+  },
+  "dialogTests": {
+    "cropDialog": true,
+    "cropDialogFocusRestored": true,
+    "extendDialog": true,
+    "cancelBookingDialog": true
+  },
+  "formTests": {
+    "schoolDataDisabled": true,
+    "favoriteRemove": true,
+    "notifSave": true,
+    "cleanBlockNotice": true
+  },
+  "toastTests": {
+    "contactSave": true
+  },
+  "accessibility": {
+    "mobileResponsive": true,
+    "noHorizontalOverflow": false
+  },
+  "visualObservations": []
+}
