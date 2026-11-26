@@ -1,0 +1,10 @@
+export { ProfileBanner } from "./profile-banner";
+export { ProfileSidebar } from "./profile-sidebar";
+export type { ProfileTab } from "./profile-sidebar";
+export { TabDashboard } from "./tab-dashboard";
+export { TabDataPribadi } from "./tab-data-pribadi";
+export { TabRiwayatMembaca } from "./tab-riwayat-membaca";
+export { TabPeminjamanSaya } from "./tab-peminjaman-saya";
+export { TabBukuFavorit } from "./tab-buku-favorit";
+export { TabPengaturanAkun } from "./tab-pengaturan-akun";
+export { TabDaftarBlokir } from "./tab-daftar-blokir";

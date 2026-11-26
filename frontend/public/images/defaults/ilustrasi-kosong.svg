@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" width="320" height="240" fill="none">
+  <!-- Ilustrasi Kosong / Empty State 320x240 -->
+  <rect width="320" height="240" rx="12" fill="#F7F8FA"/>
+  <rect x="2" y="2" width="316" height="236" rx="10" stroke="#D5DAE1" stroke-width="2"/>
+
+  <!-- Rak Buku Kosong dengan 1 Buku Miring -->
+  <line x1="40" y1="180" x2="280" y2="180" stroke="#858E9F" stroke-width="4" stroke-linecap="round"/>
+  <line x1="30" y1="188" x2="290" y2="188" stroke="#D5DAE1" stroke-width="2"/>
+
+  <!-- Ornamen Kaca Pembesar Abstrak -->
+  <circle cx="150" cy="110" r="42" stroke="#0072C6" stroke-width="3" fill="#FFFFFF"/>
+  <line x1="180" y1="140" x2="215" y2="175" stroke="#0072C6" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Halaman Melayang -->
+  <g transform="translate(132, 92) scale(1.6)" stroke="#858E9F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+  </g>
+
+  <!-- Titik Aksen Lime -->
+  <circle cx="95" cy="80" r="5" fill="#B7D731"/>
+  <circle cx="230" cy="70" r="8" fill="#0072C6" fill-opacity="0.3"/>
+</svg>

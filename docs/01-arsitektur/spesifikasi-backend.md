@@ -12,34 +12,34 @@ Dokumen ini merupakan pedoman teknis lengkap untuk implementasi backend permanen
 ### 1.1 Prinsip Identitas Tunggal (*One Identity, Multiple Workspaces*)
 - Setiap pengguna hanya memiliki **1 akun tunggal** di tabel `pengguna`.
 - Seorang pengguna dapat memiliki lebih dari satu peran (*multi-role* via tabel relasi `pengguna_peran`).
-- Seluruh staf (`pustakawan`, `admin`, `admin_master`) otomatis memiliki akses **Mode Warga** dan tunduk pada aturan kelayakan peminjaman yang sama saat meminjam buku sebagai anggota.
+- Seluruh staf (`admin`, `admin_master`) otomatis memiliki akses **Mode Warga** dan tunduk pada aturan kelayakan peminjaman yang sama saat meminjam buku sebagai anggota.
 - Backend wajib memvalidasi izin (*permission*) di setiap endpoint berdasarkan role pengguna yang sedang aktif pada sesi, bukan sekadar mengandalkan penyembunyian tombol di UI.
 
-### 1.2 Empat Peran Resmi Sistem
+### 1.2 Peran Resmi Sistem (Disederhanakan: Warga & Admin)
+
+> **Keputusan Arsitektur:** Peran `pustakawan` resmi dihapus/digabungkan ke dalam peran `admin` agar tata kelola sekolah lebih ringkas tanpa duplikasi. Seluruh tugas operasional meja sirkulasi, katalog, denda, dan stock opname dijalankan oleh `admin`.
 
 | Peran (`kode_peran`) | Ruang Lingkup & Kewenangan | Batasan Kritis |
 |---|---|---|
-| **`warga`** | Katalog, favorit, rating/ulasan, pengajuan peminjaman, antrean FIFO, perpanjangan mandiri, profil & notifikasi pribadi. | Tidak dapat mengakses endpoint staf/manajemen. |
-| **`pustakawan`** | *Broad Operational Access*: CRUD master buku, kategori, eksemplar & barcode, seluruh layanan meja sirkulasi (pinjam, kembali, pembatalan, perpanjangan), koreksi/pelunasan denda, Stock Opname. Seluruh pustakawan memiliki permission sama rata. | Tidak dapat mengelola role, tidak dapat mengubah pengaturan kebijakan global sistem, tidak dapat melihat audit log milik petugas lain. |
-| **`admin`** | *Full Operational & Data CRUD*: Seluruh wewenang Pustakawan + CRUD akun warga, buka blokir sanksi, pengaturan kebijakan sistem, lihat seluruh audit log & commit history. | **TIDAK DAPAT** mengelola, mengubah role, atau menghapus akun `admin` lain maupun `admin_master`. **TIDAK DAPAT** mengubah/menghapus `log_audit` dan `commit`. |
+| **`warga`** | Katalog, favorit, rating/ulasan, pengajuan peminjaman, antrean FIFO, perpanjangan mandiri, profil & notifikasi pribadi. | Tidak dapat mengakses endpoint admin/manajemen. |
+| **`admin`** | *Full Operational & Data CRUD*: CRUD master buku, kategori, eksemplar & barcode, seluruh layanan meja sirkulasi (pinjam, kembali, pembatalan, perpanjangan), koreksi/pelunasan denda, Stock Opname, CRUD akun warga, buka blokir sanksi, pengaturan kebijakan sistem, lihat seluruh audit log & commit history. | **TIDAK DAPAT** mengelola, mengubah role, atau menghapus akun `admin` lain maupun `admin_master`. **TIDAK DAPAT** mengubah/menghapus `log_audit` dan `commit`. |
 | **`admin_master`** | *Highest Authority*: 1 akun utama bawaan sistem. Memiliki seluruh wewenang `admin` + **halaman/endpoint eksklusif CRUD & pencabutan hak akun `admin` lainnya**. | Kebal terhadap penghapusan/penurunan role oleh akun mana pun. Tetap **TIDAK DAPAT** mengubah/menghapus `log_audit` dan `commit`. |
 
 ### 1.3 Matriks Permission Granular
 
-| Area / Resource | `warga` | `pustakawan` | `admin` | `admin_master` |
-|---|---|---|---|---|
-| Katalog, Detail, Favorit, Rating, Ulasan | ✅ | ✅ (Mode Warga) | ✅ (Mode Warga) | ✅ (Mode Warga) |
-| Pengajuan Pinjam, Antrean, Perpanjangan Pribadi | ✅ | ✅ (Mode Warga) | ✅ (Mode Warga) | ✅ (Mode Warga) |
-| CRUD Buku, Kategori, Eksemplar, Barcode | ❌ | ✅ | ✅ | ✅ |
-| Sirkulasi Meja (Pinjam, Kembali, Pembatalan, Perpanjangan) | ❌ | ✅ | ✅ | ✅ |
-| CRUD / Koreksi / Pelunasan / Pembebasan Denda | ❌ | ✅ | ✅ | ✅ |
-| Stock Opname (Sesi, Fast-Scan, Commit) | ❌ | ✅ | ✅ | ✅ |
-| CRUD Akun Warga & Buka Blokir Sanksi | ❌ | ❌ | ✅ | ✅ |
-| Pengaturan Kebijakan Sistem (Tarif, Kuota, Jam) | ❌ | ❌ | ✅ | ✅ |
-| Audit Log & Commit History (Aktivitas Pribadi) | ❌ | ✅ | ✅ | ✅ |
-| Audit Log & Commit History (Seluruh Sistem) | ❌ | ❌ | ✅ | ✅ |
-| CRUD Akun `admin` & Pemberian/Pencabutan Role Admin | ❌ | ❌ | ❌ | ✅ (Eksklusif) |
-| Ubah / Hapus Baris `log_audit` & `commit` | ❌ | ❌ | ❌ | ❌ (Dilarang Mutlak) |
+| Area / Resource | `warga` | `admin` | `admin_master` |
+|---|---|---|---|
+| Katalog, Detail, Favorit, Rating, Ulasan | ✅ | ✅ (Mode Warga) | ✅ (Mode Warga) |
+| Pengajuan Pinjam, Antrean, Perpanjangan Pribadi | ✅ | ✅ (Mode Warga) | ✅ (Mode Warga) |
+| CRUD Buku, Kategori, Eksemplar, Barcode | ❌ | ✅ | ✅ |
+| Sirkulasi Meja (Pinjam, Kembali, Pembatalan, Perpanjangan) | ❌ | ✅ | ✅ |
+| CRUD / Koreksi / Pelunasan / Pembebasan Denda | ❌ | ✅ | ✅ |
+| Stock Opname (Sesi, Fast-Scan, Commit) | ❌ | ✅ | ✅ |
+| CRUD Akun Warga & Buka Blokir Sanksi | ❌ | ✅ | ✅ |
+| Pengaturan Kebijakan Sistem (Tarif, Kuota, Jam) | ❌ | ✅ | ✅ |
+| Audit Log & Commit History (Seluruh Sistem) | ❌ | ✅ | ✅ |
+| CRUD Akun `admin` & Pemberian/Pencabutan Role Admin | ❌ | ❌ | ✅ (Eksklusif) |
+| Ubah / Hapus Baris `log_audit` & `commit` | ❌ | ❌ | ❌ (Dilarang Mutlak) |
 
 ---
 
@@ -94,7 +94,7 @@ Seluruh perubahan data sensitif, koreksi transaksi, pembatalan petugas, persetuj
 Setiap baris commit wajib menyimpan:
 1. `id` (UUID) & `kode_commit` (misal hash pendek 8 karakter unik seperti `7a8f1c2d`).
 2. `pengguna_id` (aktor yang melakukan eksekusi).
-3. `konteks_peran` (`warga`, `pustakawan`, `admin`, `admin_master`, atau `sistem_cron`).
+3. `konteks_peran` (`warga`, `admin`, `admin_master`, atau `sistem_cron`).
 4. `aksi` (kode aksi standar, misal: `KONFIRMASI_PERPANJANGAN`, `KOREKSI_DENDA_MASSAL`, `COMMIT_OPNAME`, `CABUT_PERAN`).
 5. `pesan_commit` (teks wajib dari petugas/sistem yang menjelaskan alasan perubahan).
 6. `tabel` & `entitas_id` (objek target perubahan).
@@ -125,7 +125,7 @@ Untuk mendukung Stock Opname yang nyaman dan akurat:
 
 ### 6.1 Kebijakan Saluran
 - **Warga:** Notifikasi *In-App* + *Email* (hanya dikirim ke alamat email terverifikasi dan menghormati preferensi kategori notifikasi di profil warga).
-- **Pustakawan & Admin:** Notifikasi *In-App* saja (tanpa email).
+- **Admin:** Notifikasi *In-App* saja (tanpa email).
 
 ### 6.2 Idempotensi & Ketahanan Email
 - Kegagalan pengiriman email SMTP/API **tidak boleh membatalkan transaksi bisnis utama**.

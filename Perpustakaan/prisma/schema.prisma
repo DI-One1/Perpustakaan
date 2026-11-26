@@ -1,0 +1,346 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum KodePeran {
+  warga
+  admin
+  admin_master
+}
+
+enum StatusBlokir {
+  normal
+  blokir_sementara
+  blokir_permanen
+}
+
+enum StatusEksemplar {
+  tersedia
+  direservasi
+  dipinjam
+  rusak
+  hilang
+}
+
+enum JenisReservasi {
+  pengajuan
+  antre
+}
+
+enum StatusReservasi {
+  menunggu
+  siap_diambil
+  selesai
+  batal
+  ditolak
+  kedaluwarsa
+}
+
+enum StatusPinjaman {
+  aktif
+  terlambat
+  selesai
+}
+
+enum StatusAjuanPerpanjangan {
+  menunggu
+  disetujui
+  ditolak
+}
+
+enum StatusDenda {
+  belum_lunas
+  lunas
+  dibebaskan
+}
+
+enum StatusOpname {
+  draf
+  berjalan
+  selesai_commit
+  dibatalkan
+}
+
+enum StatusTemuanOpname {
+  cocok
+  rusak
+  hilang
+  salah_lokasi
+}
+
+model Pengguna {
+  id                      String       @id @default(uuid())
+  nomor_induk             String       @unique
+  nama_lengkap            String
+  email                   String       @unique
+  kelas_atau_jabatan      String
+  password_hash           String
+  peran                   KodePeran[]  @default([warga])
+  is_admin_master         Boolean      @default(false)
+  status_blokir           StatusBlokir @default(normal)
+  blokir_hingga           DateTime?
+  no_show_count           Int          @default(0)
+  jumlah_blokir_sementara Int          @default(0)
+  deleted_at              DateTime?
+  created_at              DateTime     @default(now())
+
+  sesi              Sesi[]
+  reservasi         Reservasi[]
+  pinjaman          Pinjaman[]           @relation("PinjamanWarga")
+  pinjaman_diproses Pinjaman[]           @relation("PinjamanPetugas")
+  perpanjangan      AjuanPerpanjangan[]
+  denda             Denda[]
+  favorit           Favorit[]
+  ulasan            Ulasan[]
+  notifikasi        Notifikasi[]
+  opname_sesi       OpnameSesi[]
+  log_audit         LogAudit[]
+
+  @@map("pengguna")
+}
+
+model Sesi {
+  id                  String    @id @default(uuid())
+  token               String    @unique
+  pengguna_id         String
+  konteks_peran_aktif KodePeran @default(warga)
+  kedaluwarsa_pada    DateTime
+  created_at          DateTime  @default(now())
+
+  pengguna Pengguna @relation(fields: [pengguna_id], references: [id], onDelete: Cascade)
+
+  @@map("sesi")
+}
+
+model Kategori {
+  id    String @id @default(uuid())
+  nama  String
+  slug  String @unique
+  buku  Buku[]
+
+  @@map("kategori")
+}
+
+model Buku {
+  id           String   @id @default(uuid())
+  judul        String
+  penulis      String
+  penerbit     String
+  tahun_terbit Int
+  isbn         String   @unique
+  sinopsis     String
+  cover_url    String
+  kategori_id  String
+  created_at   DateTime @default(now())
+
+  kategori  Kategori    @relation(fields: [kategori_id], references: [id])
+  eksemplar Eksemplar[]
+  reservasi Reservasi[]
+  favorit   Favorit[]
+  ulasan    Ulasan[]
+
+  @@map("buku")
+}
+
+model Eksemplar {
+  id           String          @id @default(uuid())
+  buku_id      String
+  kode_barcode String          @unique
+  lokasi_rak   String          @default("Rak A1")
+  status       StatusEksemplar @default(tersedia)
+  deleted_at   DateTime?
+  created_at   DateTime        @default(now())
+
+  buku          Buku           @relation(fields: [buku_id], references: [id])
+  reservasi     Reservasi[]
+  pinjaman      Pinjaman[]
+  opname_detail OpnameDetail[]
+
+  @@map("eksemplar")
+}
+
+model Reservasi {
+  id             String          @id @default(uuid())
+  kode_reservasi String          @unique
+  pengguna_id    String
+  buku_id        String
+  eksemplar_id   String?
+  jenis          JenisReservasi
+  status         StatusReservasi
+  waktu_tenggat  DateTime?
+  alasan_batal   String?
+  created_at     DateTime        @default(now())
+
+  pengguna  Pengguna   @relation(fields: [pengguna_id], references: [id])
+  buku      Buku       @relation(fields: [buku_id], references: [id])
+  eksemplar Eksemplar? @relation(fields: [eksemplar_id], references: [id])
+  pinjaman  Pinjaman[]
+
+  @@map("reservasi")
+}
+
+model Pinjaman {
+  id                  String         @id @default(uuid())
+  pengguna_id         String
+  eksemplar_id        String
+  reservasi_id        String?
+  jalur               String         @default("reservasi_online")
+  tanggal_pinjam      DateTime       @default(now())
+  tanggal_jatuh_tempo DateTime
+  tanggal_kembali     DateTime?
+  status              StatusPinjaman @default(aktif)
+  petugas_id          String?
+
+  pengguna     Pengguna            @relation("PinjamanWarga", fields: [pengguna_id], references: [id])
+  petugas      Pengguna?           @relation("PinjamanPetugas", fields: [petugas_id], references: [id])
+  eksemplar    Eksemplar           @relation(fields: [eksemplar_id], references: [id])
+  reservasi    Reservasi?          @relation(fields: [reservasi_id], references: [id])
+  perpanjangan AjuanPerpanjangan[]
+  denda        Denda[]
+
+  @@map("pinjaman")
+}
+
+model AjuanPerpanjangan {
+  id                    String                  @id @default(uuid())
+  pinjaman_id           String
+  pengguna_id           String
+  durasi_hari_diminta   Int
+  durasi_hari_disetujui Int?
+  alasan                String
+  status                StatusAjuanPerpanjangan @default(menunggu)
+  catatan_admin         String?
+  diproses_oleh         String?
+  created_at            DateTime                @default(now())
+
+  pinjaman Pinjaman @relation(fields: [pinjaman_id], references: [id])
+  pengguna Pengguna @relation(fields: [pengguna_id], references: [id])
+
+  @@map("ajuan_perpanjangan")
+}
+
+model Denda {
+  id                    String      @id @default(uuid())
+  pengguna_id           String
+  pinjaman_id           String
+  jumlah_hari_terlambat Int
+  nominal               Int
+  status                StatusDenda @default(belum_lunas)
+  dilunasi_pada         DateTime?
+  created_at            DateTime    @default(now())
+
+  pengguna Pengguna @relation(fields: [pengguna_id], references: [id])
+  pinjaman Pinjaman @relation(fields: [pinjaman_id], references: [id])
+
+  @@map("denda")
+}
+
+model Favorit {
+  id          String   @id @default(uuid())
+  pengguna_id String
+  buku_id     String
+  created_at  DateTime @default(now())
+
+  pengguna Pengguna @relation(fields: [pengguna_id], references: [id], onDelete: Cascade)
+  buku     Buku     @relation(fields: [buku_id], references: [id], onDelete: Cascade)
+
+  @@unique([pengguna_id, buku_id])
+  @@map("favorit")
+}
+
+model Ulasan {
+  id          String   @id @default(uuid())
+  pengguna_id String
+  buku_id     String
+  rating      Int
+  komentar    String
+  created_at  DateTime @default(now())
+
+  pengguna Pengguna @relation(fields: [pengguna_id], references: [id], onDelete: Cascade)
+  buku     Buku     @relation(fields: [buku_id], references: [id], onDelete: Cascade)
+
+  @@unique([pengguna_id, buku_id])
+  @@map("ulasan")
+}
+
+model Notifikasi {
+  id           String    @id @default(uuid())
+  pengguna_id  String
+  target_peran KodePeran @default(warga)
+  judul        String
+  pesan        String
+  tautan       String?
+  sudah_dibaca Boolean   @default(false)
+  created_at   DateTime  @default(now())
+
+  pengguna Pengguna @relation(fields: [pengguna_id], references: [id], onDelete: Cascade)
+
+  @@map("notifikasi")
+}
+
+model OpnameSesi {
+  id            String       @id @default(uuid())
+  kode_sesi     String       @unique
+  judul         String
+  cakupan       String       @default("semua")
+  status        StatusOpname @default(berjalan)
+  petugas_id    String
+  pesan_commit  String?
+  dibuat_pada   DateTime     @default(now())
+  disahkan_pada DateTime?
+
+  petugas Pengguna       @relation(fields: [petugas_id], references: [id])
+  detail  OpnameDetail[]
+
+  @@map("opname_sesi")
+}
+
+model OpnameDetail {
+  id                  String              @id @default(uuid())
+  sesi_id             String
+  eksemplar_id        String
+  status_sistem_awal  StatusEksemplar
+  status_fisik_temuan StatusTemuanOpname?
+  sudah_dipindai      Boolean             @default(false)
+  dipindai_pada       DateTime?
+
+  sesi      OpnameSesi @relation(fields: [sesi_id], references: [id], onDelete: Cascade)
+  eksemplar Eksemplar  @relation(fields: [eksemplar_id], references: [id])
+
+  @@unique([sesi_id, eksemplar_id])
+  @@map("opname_detail")
+}
+
+model KebijakanSistem {
+  id                    String @id @default("default")
+  durasi_pinjam_hari    Int    @default(7)
+  denda_per_hari        Int    @default(500)
+  batas_pengambilan_jam Int    @default(24)
+  kuota_aktif_maks      Int    @default(1)
+
+  @@map("kebijakan_sistem")
+}
+
+model LogAudit {
+  id            String   @id @default(uuid())
+  kode_commit   String   @unique
+  pengguna_id   String?
+  konteks_peran String
+  aksi          String
+  pesan_commit  String
+  tabel         String
+  entitas_id    String
+  data_lama     Json?
+  data_baru     Json?
+  created_at    DateTime @default(now())
+
+  pengguna Pengguna? @relation(fields: [pengguna_id], references: [id])
+
+  @@map("log_audit")
+}

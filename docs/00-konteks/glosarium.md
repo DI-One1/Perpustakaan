@@ -21,10 +21,9 @@ Dokumen ini menetapkan istilah baku di **Antarmuka Pengguna (UI)** serta padanan
 
 | Istilah | Definisi |
 |---|---|
-| **One Identity, Multiple Workspaces** | Satu akun pengguna memiliki satu identitas tunggal. Pengguna dengan peran tambahan dapat berpindah antara Mode Warga, Mode Pustakawan, dan Mode Admin tanpa membuat akun baru. |
-| **Warga** | Pengalaman utama website untuk pemustaka (siswa, guru, staf, maupun petugas saat dalam mode anggota). |
-| **Pustakawan** | Pengelola operasional perpustakaan dengan akses luas (*broad operational access*: CRUD buku, kategori, eksemplar, sirkulasi, denda, dan opname). |
-| **Admin** | Pengelola sistem dengan akses penuh operasional & manajemen data, termasuk CRUD data (kecuali audit log dan commit). Tidak dapat menghapus/mengelola akun Admin lain. |
+| **One Identity, Multiple Workspaces** | Satu akun pengguna memiliki satu identitas tunggal. Pengguna dengan peran `admin` dapat berpindah antara Mode Warga dan Workspace Admin tanpa membuat akun baru. |
+| **Warga** | Pengalaman utama website untuk pemustaka (siswa, guru, staf, maupun Admin saat dalam Mode Warga). |
+| **Admin** | Pengelola operasional perpustakaan & sistem dengan akses penuh (sirkulasi, katalog, opname, denda, CRUD warga, kebijakan sistem), kecuali mengubah/menghapus `log_audit` dan mengelola akun Admin lain. |
 | **Admin Master** | Satu akun Administrator utama bawaan sistem yang kebal dihapus dan memiliki kewenangan eksklusif mengelola (CRUD) akun-akun Admin lainnya. |
 | **Eksemplar** | Satu unit buku fisik spesifik yang memiliki barcode unik (`BK-xxxx`) dan kondisi fisik tersendiri. |
 | **Alokasi** | Pengikatan satu eksemplar fisik tertentu kepada pengajuan seorang warga selama batas waktu 24 jam. |

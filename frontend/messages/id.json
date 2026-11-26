@@ -1,0 +1,43 @@
+{
+  "common": {
+    "appName": "Perpustakaan Digital SMK TI Bazma",
+    "appShortName": "Bilik Literasi",
+    "clientName": "Yayasan BAZMA Pertamina",
+    "search": "Cari buku, pengarang, penerbit, atau ISBN...",
+    "signIn": "Masuk",
+    "signOut": "Keluar",
+    "account": "Akun",
+    "myLoans": "Pinjaman Saya",
+    "favorites": "Favorit",
+    "literacy": "Literasi",
+    "help": "Bantuan",
+    "categories": "Kategori",
+    "popularSearches": "Pencarian populer",
+    "queueAndBooking": "Antrean & Booking",
+    "aboutLibrary": "Tentang Perpustakaan",
+    "aboutDeveloper": "Tentang Pengembang",
+    "changeLanguage": "Atur Bahasa",
+    "languageId": "Bahasa Indonesia",
+    "languageEn": "English",
+    "loading": "Memuat data...",
+    "empty": "Belum ada data.",
+    "error": "Terjadi kesalahan.",
+    "retry": "Coba Lagi",
+    "digitalCollectionComingSoon": "Koleksi Digital - Segera hadir"
+  },
+  "nav": {
+    "home": "Beranda",
+    "catalog": "Katalog",
+    "myQueue": "Antrean Saya",
+    "myLoans": "Pinjaman Saya",
+    "profile": "Profil"
+  },
+  "book": {
+    "available": "Tersedia",
+    "borrowed": "Dipinjam",
+    "booked": "Dibooking",
+    "borrow": "Pinjam Buku",
+    "queue": "Antri Pinjaman",
+    "details": "Detail Buku"
+  }
+}

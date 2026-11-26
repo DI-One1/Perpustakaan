@@ -944,7 +944,7 @@ Sidebar tabs:
 
 Jangan menampilkan barcode dekoratif atau badge status yang tidak diperlukan.
 
-### 18.5 Librarian Dashboard (`/pustakawan`)
+### 18.5 Admin Dashboard (`/admin`)
 
 `[APPROVED DECISION]`
 
@@ -1121,7 +1121,7 @@ mx-auto w-[min(calc(100%-32px),1280px)] sm:w-[min(calc(100%-48px),1280px)]
 ### 22.5 Prinsip Efisiensi Informasi dan Minimalisme Konten
 
 - **Satu Istilah Resmi**: Gunakan secara mutlak istilah "Pengajuan Peminjaman" untuk seluruh antarmuka (menggantikan "Booking").
-- **Hapus Redundansi & Instruksi Panjang**: Jangan menaruh paragraf tutorial atau SOP di halaman transaksional (seperti cara pengambilan di meja pustakawan atau tombol kartu anggota bila sudah tersedia di header/navigasi). Informasi tersebut dipusatkan di halaman FAQ atau panduan tersendiri.
+- **Hapus Redundansi & Instruksi Panjang**: Jangan menaruh paragraf tutorial atau SOP di halaman transaksional (seperti cara pengambilan di meja admin atau tombol kartu anggota bila sudah tersedia di header/navigasi). Informasi tersebut dipusatkan di halaman FAQ atau panduan tersendiri.
 - **Informasi Waktu yang Ringkas & Fungsional**: Ganti kotak peringatan/alert panjang dengan indikator countdown real-time yang bersih (`Batas Pengambilan: HH:MM:SS`) dengan pewarnaan urgensi proporsional.
 - **Dialog Konfirmasi Minimalis**: Pertahankan dialog konfirmasi yang singkat dan langsung ke inti (contoh: judul "Batalkan Pengajuan?", teks "Apakah Anda yakin ingin membatalkan pengajuan peminjaman ini?", tombol `[Kembali]` dan `[Ya, Batalkan]`).
 - **Penyajian Status Ringkas**: Status penolakan disajikan lewat badge status ringkas ("Ditolak") beserta catatan alasan penolakan singkat pada card, tanpa paragraf penjelasan panjang.

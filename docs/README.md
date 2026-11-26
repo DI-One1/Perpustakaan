@@ -15,13 +15,14 @@ Seluruh dokumen di folder `docs/` ini telah dikonsolidasikan berdasarkan keputus
 
 ### 01 — Arsitektur & Spesifikasi Backend (P1)
 * [Aturan Bisnis Final (`01-arsitektur/aturan-bisnis.md`)](01-arsitektur/aturan-bisnis.md): Aturan sirkulasi, kuota, denda Rp500/hari, no-show 24 jam, antrean FIFO, dan perpanjangan.
-* [Spesifikasi Teknis Backend (`01-arsitektur/spesifikasi-backend.md`)](01-arsitektur/spesifikasi-backend.md): Acuan lengkap Tim Backend (Matriks Role & RBAC Admin Master/Admin/Pustakawan/Warga, State Machine, Git-Style Commit & Audit Log, Stock Opname, Notifikasi & Cron, Hybrid Soft/Hard Delete).
+* [Spesifikasi Teknis Backend (`01-arsitektur/spesifikasi-backend.md`)](01-arsitektur/spesifikasi-backend.md): Acuan lengkap Tim Backend (Matriks Role & RBAC Admin Master/Admin/Warga, State Machine, Git-Style Commit & Audit Log, Stock Opname, Notifikasi & Cron, Hybrid Soft/Hard Delete).
+* [Workflow Peran Backend Super Detail (`01-arsitektur/workflow-peran-backend.md`)](01-arsitektur/workflow-peran-backend.md): Peta eksekusi backend end-to-end per peran (`warga`, `admin`, `admin_master`, dan `sistem_cron`), validasi RBAC, query atomik, dan error handling.
+* [Diagram Workflow Lengkap (`01-arsitektur/workflow-diagram.md`)](01-arsitektur/workflow-diagram.md): Diagram Mermaid interaktif seluruh alur sistem (4 zona: Warga, Backend, Admin, dan Cron Jobs) dengan relasi lintas zona.
 * [Standar Penamaan & Bahasa Kode (`01-arsitektur/penamaan-dan-bahasa.md`)](01-arsitektur/penamaan-dan-bahasa.md): Aturan mutlak konsistensi Bahasa Indonesia penuh (`direservasi`, bukan `dibooking`; `snake_case`, tanpa campur bahasa Inggris).
 * [Panduan Basis Data (`01-arsitektur/panduan-basis-data.md`)](01-arsitektur/panduan-basis-data.md): Eksekusi PostgreSQL, `dbmate`, seeder, dan skema tabel lanjutan.
 
 #### Alur Kerja per Aktor (`01-arsitektur/workflow/`)
 * [Workflow Warga (`workflow/warga.md`)](01-arsitektur/workflow/warga.md)
-* [Workflow Pustakawan (`workflow/pustakawan.md`)](01-arsitektur/workflow/pustakawan.md)
 * [Workflow Admin & Admin Master (`workflow/admin.md`)](01-arsitektur/workflow/admin.md)
 * [Workflow Sistem Otomatis (`workflow/sistem.md`)](01-arsitektur/workflow/sistem.md)
 
@@ -36,6 +37,5 @@ Seluruh dokumen di folder `docs/` ini telah dikonsolidasikan berdasarkan keputus
 * [Referensi Visual (`03-desain/referensi.md`)](03-desain/referensi.md): Catatan referensi desain antarmuka.
 
 ### 04 — Operasional & Deployment
-* [Panduan Pustakawan (`04-operasional/panduan-pustakawan.md`)](04-operasional/panduan-pustakawan.md): SOP penggunaan Meja Sirkulasi dan Stock Opname Fast-Scan.
-* [Panduan Admin (`04-operasional/panduan-admin.md`)](04-operasional/panduan-admin.md): SOP manajemen role, Admin Master, koreksi denda, dan audit log.
+* [Panduan Admin (`04-operasional/panduan-admin.md`)](04-operasional/panduan-admin.md): SOP Meja Sirkulasi, Stock Opname Fast-Scan, manajemen role, Admin Master, koreksi denda, dan audit log.
 * [Deploy & Backup (`04-operasional/deploy-dan-backup.md`)](04-operasional/deploy-dan-backup.md): Konfigurasi server, cron job otomatis, dan backup database.

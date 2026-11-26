@@ -17,7 +17,7 @@ Sekolah di bawah naungan yayasan perlu memiliki **perpustakaan digital** yang:
 
 ## 3. Alasan di balik permintaan
 
-Salah satu yang akan dipertimbangkan sebagai penentu **akreditasi sekolah** adalah perpustakaan yang terstandarisasi, terintegrasi, dan menyelesaikan solusi terkini. Jadi sistem ini juga berfungsi sebagai bukti kesiapan sekolah, bukan hanya alat kerja pustakawan.
+Salah satu yang akan dipertimbangkan sebagai penentu **akreditasi sekolah** adalah perpustakaan yang terstandarisasi, terintegrasi, dan menyelesaikan solusi terkini. Jadi sistem ini juga berfungsi sebagai bukti kesiapan sekolah, bukan hanya alat kerja pengelola perpustakaan.
 
 ## 4. Masalah yang ada sekarang
 
@@ -50,5 +50,5 @@ Bagian ini turunan dari permintaan di atas dan belum dikonfirmasi klien.
 ## 7. Cara kita menyampaikan hasil
 
 - Demo ke yayasan dan sekolah menjelang akhir bulan.
-- Dokumentasi: README, panduan admin, panduan pustakawan, dan panduan penerus.
+- Dokumentasi: README, panduan admin, dan panduan penerus.
 - Ringkasan satu halaman tentang bagaimana sistem menjawab tiga kriteria: terstandarisasi, terintegrasi, solusi terkini.

@@ -1,0 +1,43 @@
+{
+  "common": {
+    "appName": "SMK TI Bazma Digital Library",
+    "appShortName": "Literacy Corner",
+    "clientName": "BAZMA Pertamina Foundation",
+    "search": "Search books, authors, publishers, or ISBN...",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "account": "Account",
+    "myLoans": "My Loans",
+    "favorites": "Favorites",
+    "literacy": "Literacy",
+    "help": "Help",
+    "categories": "Categories",
+    "popularSearches": "Popular searches",
+    "queueAndBooking": "Queue & Booking",
+    "aboutLibrary": "About Library",
+    "aboutDeveloper": "About Developer",
+    "changeLanguage": "Change Language",
+    "languageId": "Bahasa Indonesia",
+    "languageEn": "English",
+    "loading": "Loading data...",
+    "empty": "No data available.",
+    "error": "An error occurred.",
+    "retry": "Try Again",
+    "digitalCollectionComingSoon": "Digital Collection - Coming soon"
+  },
+  "nav": {
+    "home": "Home",
+    "catalog": "Catalog",
+    "myQueue": "My Queue",
+    "myLoans": "My Loans",
+    "profile": "Profile"
+  },
+  "book": {
+    "available": "Available",
+    "borrowed": "Borrowed",
+    "booked": "Booked",
+    "borrow": "Borrow Book",
+    "queue": "Queue Book",
+    "details": "Book Details"
+  }
+}

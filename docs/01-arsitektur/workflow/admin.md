@@ -1,6 +1,6 @@
 # Workflow Admin & Admin Master
 
-Admin bekerja di **Workspace Admin** (`/admin`) dengan pola antarmuka mirip Pustakawan tetapi memiliki jangkauan kontrol sistem dan manajemen penuh.
+Admin bekerja di **Workspace Admin** (`/admin`) dengan kendali penuh atas seluruh operasional perpustakaan (meja sirkulasi, katalog, eksemplar & barcode, denda, stock opname) serta manajemen sistem dan warga. Peran `pustakawan` telah digabungkan ke dalam peran `admin`.
 
 ---
 
@@ -8,7 +8,7 @@ Admin bekerja di **Workspace Admin** (`/admin`) dengan pola antarmuka mirip Pust
 
 | Aspek | Admin Biasa (`admin`) | Admin Master (`admin_master`) |
 |---|---|---|
-| Operasional Pustakawan (Sirkulasi, Opname, CRUD Buku, Denda) | ✅ Penuh | ✅ Penuh |
+| Operasional Perpustakaan (Sirkulasi, Opname, CRUD Buku, Denda) | ✅ Penuh | ✅ Penuh |
 | CRUD Akun Warga & Buka Blokir Sanksi | ✅ Penuh | ✅ Penuh |
 | Pengaturan Kebijakan Sistem (Tarif, Durasi, Kuota) | ✅ Penuh | ✅ Penuh |
 | Melihat Seluruh `log_audit` & Riwayat Commit | ✅ Penuh | ✅ Penuh |
@@ -25,8 +25,7 @@ Admin bekerja di **Workspace Admin** (`/admin`) dengan pola antarmuka mirip Pust
    - **Soft Delete (`deleted_at`):** Untuk warga yang sudah lulus/pindah atau sudah memiliki histori transaksi pinjaman/denda agar integritas data riwayat tetap terjaga.
    - **Hard Delete (Permanen):** Hanya untuk akun yang salah buat dan belum memiliki histori transaksi apa pun.
 3. **Manajemen Peran (*Role Assignment*):**
-   - Admin / Admin Master dapat memberikan atau mencabut role `pustakawan` pada akun warga tanpa membuat akun kedua.
-   - Pemberian dan pencabutan role `admin` hanya dilakukan di halaman khusus **Admin Master**.
+   - Pemberian dan pencabutan role `admin` pada akun pengguna hanya dilakukan di halaman khusus **Admin Master**.
    - Setiap perubahan role wajib mencatat pesan commit di `log_audit`.
 
 ---

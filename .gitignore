@@ -1,10 +1,41 @@
+# dependencies
 node_modules/
-.next/
-.env
-.env.local
-*.log
 vendor/
 bin/
 obj/
+
+# build & caches
+.next/
+out/
+build/
+coverage/
+.turbo/
+.cache/
+
+# environment & secrets (NEVER COMMIT REAL CREDENTIALS)
+.env
+.env.*
+.env*.local
+*.env
+**/.env
+**/.env.*
+**/.env*.local
+!**/.env.example
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# system & IDE
 .DS_Store
+Thumbs.db
+*.pem
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# data
 data-warga/

@@ -22,5 +22,5 @@ Dokumentasi ini menjadi acuan kontrak REST API antara Frontend dan Backend BILIK
 ## 2. Aturan Keamanan & Otorisasi
 
 1. Seluruh endpoint warga dan staf wajib memverifikasi **sesi terautentikasi** dari cookie `httpOnly` (bukan header `x-user-id` bebas di produksi).
-2. Backend wajib memeriksa izin (*permission*) berdasarkan peran aktif (`warga`, `pustakawan`, `admin`, `admin_master`) sesuai matriks di [Spesifikasi Teknis Backend](../01-arsitektur/spesifikasi-backend.md).
+2. Backend wajib memeriksa izin (*permission*) berdasarkan peran aktif (`warga`, `admin`, `admin_master`) sesuai matriks di [Spesifikasi Teknis Backend](../01-arsitektur/spesifikasi-backend.md) dan [Workflow Peran Backend](../01-arsitektur/workflow-peran-backend.md).
 3. Seluruh mutasi sensitif oleh staf (pembatalan petugas, koreksi denda, perpanjangan, pencabutan role, commit opname) wajib menerima field `pesan_commit` dan mencatatnya ke `log_audit`.

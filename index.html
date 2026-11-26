@@ -605,7 +605,7 @@
       <span class="hero-badge">Single Source of Truth untuk Tim Backend (Framework-Agnostic)</span>
       <h1>Pedoman Komprehensif Workflow, Role, &amp; Arsitektur Data BILIK</h1>
       <p>
-        Dokumen visual ini merangkum seluruh alur kerja sistem dari proses login satu identitas, perpindahan workspace (Warga, Pustakawan, Admin, Admin Master), alokasi eksemplar fisik ber-barcode, antrean FIFO, perpanjangan, denda, Stock Opname, hingga standar Git-style Commit dan penamaan Bahasa Indonesia penuh.
+        Dokumen visual ini merangkum seluruh alur kerja sistem dari proses login satu identitas, perpindahan workspace (Mode Warga, Workspace Admin, dan Admin Master), alokasi eksemplar fisik ber-barcode, antrean FIFO, perpanjangan, denda, Stock Opname, hingga standar Git-style Commit dan penamaan Bahasa Indonesia penuh.
       </p>
       <div class="hero-meta">
         <div class="hero-stat">
@@ -632,8 +632,8 @@
       <div class="sec-head">
         <div>
           <span class="sec-num">Bagian 1</span>
-          <h2>Preview Workspace Pengelola (Mode Pustakawan / Admin / Admin Master)</h2>
-          <p>Ketika pengguna ber-role staf masuk dan memilih Mode Pengelola, pengguna diarahkan ke workspace ber-sidebar seperti pola INLISLite berikut.</p>
+          <h2>Preview Workspace Pengelola (Mode Warga / Admin / Admin Master)</h2>
+          <p>Ketika pengguna ber-role Admin masuk dan memilih Workspace Admin, pengguna diarahkan ke workspace ber-sidebar seperti pola INLISLite berikut.</p>
         </div>
       </div>
 
@@ -642,8 +642,7 @@
           <span style="font-size: 12.5px; font-weight: 700; color: var(--heading);">Simulasi Perpindahan Workspace (1 Identitas Tunggal):</span>
           <div class="ws-tabs" role="tablist">
             <button type="button" class="ws-tab" onclick="switchWorkspace('warga', this)">Mode Warga (Utama)</button>
-            <button type="button" class="ws-tab active" onclick="switchWorkspace('pustakawan', this)">Mode Pustakawan</button>
-            <button type="button" class="ws-tab" onclick="switchWorkspace('admin', this)">Mode Admin</button>
+            <button type="button" class="ws-tab active" onclick="switchWorkspace('admin', this)">Workspace Admin</button>
             <button type="button" class="ws-tab" onclick="switchWorkspace('master', this)">Mode Admin Master</button>
           </div>
         </div>
@@ -715,25 +714,20 @@
             <line x1="748" y1="167" x2="795" y2="167" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
             <polygon points="865,122 935,167 865,212 795,167" fill="#FFFFFF" stroke="#1D4ED8" stroke-width="2" />
             <text x="865" y="164" text-anchor="middle" fill="#0F172A" font-size="11" font-weight="700">Punya Role</text>
-            <text x="865" y="178" text-anchor="middle" fill="#0F172A" font-size="10.5">Staf / Admin?</text>
+            <text x="865" y="178" text-anchor="middle" fill="#0F172A" font-size="10.5">Admin?</text>
 
             <!-- Branch to Workspaces -->
             <line x1="865" y1="212" x2="865" y2="255" stroke="#1D4ED8" stroke-width="2" />
             <text x="875" y="238" fill="#1D4ED8" font-size="11" font-weight="700">Ya (Tampil Switcher di Profil)</text>
-            <line x1="650" y1="255" x2="980" y2="255" stroke="#1D4ED8" stroke-width="2" />
-            <line x1="650" y1="255" x2="650" y2="282" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
-            <line x1="815" y1="255" x2="815" y2="282" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
-            <line x1="980" y1="255" x2="980" y2="282" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <line x1="740" y1="255" x2="977" y2="255" stroke="#1D4ED8" stroke-width="2" />
+            <line x1="740" y1="255" x2="740" y2="282" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
+            <line x1="977" y1="255" x2="977" y2="282" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
 
-            <rect x="575" y="285" width="150" height="52" rx="8" fill="#132B6D" />
-            <text x="650" y="308" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">/pustakawan</text>
-            <text x="650" y="324" text-anchor="middle" fill="#BFDBFE" font-size="10">Sirkulasi, Koleksi, Opname</text>
+            <rect x="640" y="285" width="200" height="52" rx="8" fill="#132B6D" />
+            <text x="740" y="308" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">/admin</text>
+            <text x="740" y="324" text-anchor="middle" fill="#BFDBFE" font-size="10">Sirkulasi, Koleksi, Opname, Warga, Policy</text>
 
-            <rect x="740" y="285" width="150" height="52" rx="8" fill="#132B6D" />
-            <text x="815" y="308" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">/admin</text>
-            <text x="815" y="324" text-anchor="middle" fill="#BFDBFE" font-size="10">Full Ops, Warga, Audit, Policy</text>
-
-            <rect x="905" y="285" width="145" height="52" rx="8" fill="#093A71" />
+            <rect x="895" y="285" width="165" height="52" rx="8" fill="#093A71" />
             <text x="977" y="308" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">/admin/master</text>
             <text x="977" y="324" text-anchor="middle" fill="#BFDBFE" font-size="10">Eksklusif CRUD Akun Admin</text>
           </svg>
@@ -817,7 +811,7 @@
           <svg viewBox="0 0 1080 390" width="100%" style="min-width: 840px; height: auto;">
             <!-- Pinjam di Meja -->
             <rect x="20" y="30" width="160" height="44" rx="22" fill="#1D4ED8" />
-            <text x="100" y="57" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">Di Meja Pustakawan</text>
+            <text x="100" y="57" text-anchor="middle" fill="#FFF" font-size="11.5" font-weight="700">Di Meja Admin</text>
 
             <line x1="180" y1="52" x2="225" y2="52" stroke="#1D4ED8" stroke-width="2" marker-end="url(#arrow)" />
             <rect x="228" y="25" width="175" height="54" rx="8" fill="#3B82F6" />
@@ -957,7 +951,6 @@
             <tr>
               <th>Modul / Fitur / Aksi</th>
               <th>Warga</th>
-              <th>Pustakawan</th>
               <th>Admin</th>
               <th>Admin Master</th>
             </tr>
@@ -968,26 +961,22 @@
               <td><span class="badge b-success">Ya</span></td>
               <td><span class="badge b-primary">Mode Warga</span></td>
               <td><span class="badge b-primary">Mode Warga</span></td>
-              <td><span class="badge b-primary">Mode Warga</span></td>
             </tr>
             <tr>
               <td>Ajukan Peminjaman, Antre FIFO, &amp; Perpanjangan Pribadi</td>
               <td><span class="badge b-success">Ya (Sesuai Kelayakan)</span></td>
               <td><span class="badge b-primary">Mode Warga</span></td>
               <td><span class="badge b-primary">Mode Warga</span></td>
-              <td><span class="badge b-primary">Mode Warga</span></td>
             </tr>
             <tr>
               <td>CRUD Master Buku, Kategori, Eksemplar, &amp; Barcode</td>
               <td><span class="badge b-muted">Tidak</span></td>
-              <td><span class="badge b-success">Ya (Broad Access)</span></td>
               <td><span class="badge b-success">Ya</span></td>
               <td><span class="badge b-success">Ya</span></td>
             </tr>
             <tr>
               <td>Meja Sirkulasi (Serah Terima, Kembali, Batal, Perpanjangan)</td>
               <td><span class="badge b-muted">Tidak</span></td>
-              <td><span class="badge b-success">Ya (Sama Rata)</span></td>
               <td><span class="badge b-success">Ya</span></td>
               <td><span class="badge b-success">Ya</span></td>
             </tr>
@@ -996,18 +985,15 @@
               <td><span class="badge b-muted">Tidak</span></td>
               <td><span class="badge b-success">Ya (+ Commit)</span></td>
               <td><span class="badge b-success">Ya (+ Commit)</span></td>
-              <td><span class="badge b-success">Ya (+ Commit)</span></td>
             </tr>
             <tr>
               <td>Stock Opname Fast-Scan &amp; Pengesahan Selisih</td>
               <td><span class="badge b-muted">Tidak</span></td>
               <td><span class="badge b-success">Ya (+ Commit)</span></td>
               <td><span class="badge b-success">Ya (+ Commit)</span></td>
-              <td><span class="badge b-success">Ya (+ Commit)</span></td>
             </tr>
             <tr>
               <td>CRUD Akun Warga (Soft Delete Lulus / Hard Delete Salah Buat) &amp; Buka Blokir</td>
-              <td><span class="badge b-muted">Tidak</span></td>
               <td><span class="badge b-muted">Tidak</span></td>
               <td><span class="badge b-success">Ya</span></td>
               <td><span class="badge b-success">Ya</span></td>
@@ -1093,7 +1079,7 @@
           <h3 style="font-size: 15px; color: var(--primary); margin-bottom: 8px;">6. Saluran Notifikasi &amp; Cron</h3>
           <ul class="clean-list">
             <li><strong>Warga:</strong> In-App + Email (hanya ke email terverifikasi &amp; hormati preferensi).</li>
-            <li><strong>Pustakawan &amp; Admin:</strong> In-App saja (tanpa email).</li>
+            <li><strong>Admin:</strong> In-App saja (tanpa email).</li>
             <li>Cron Job tiap 5 menit memproses pengajuan kedaluwarsa 24 jam, poin <em>no-show</em>, dan promosi antrean FIFO.</li>
           </ul>
         </div>
@@ -1149,8 +1135,8 @@
           <div class="c-cmt">// Contoh Struktur Record Commit di tabel log_audit</div>
           {<br />
           &nbsp;&nbsp;<span class="c-key">"kode_commit"</span>: <span class="c-str">"7a8f1c2d"</span>,<br />
-          &nbsp;&nbsp;<span class="c-key">"pengguna_id"</span>: <span class="c-str">"usr-pustakawan-1"</span>,<br />
-          &nbsp;&nbsp;<span class="c-key">"konteks_peran"</span>: <span class="c-str">"pustakawan"</span>,<br />
+          &nbsp;&nbsp;<span class="c-key">"pengguna_id"</span>: <span class="c-str">"usr-admin-1"</span>,<br />
+          &nbsp;&nbsp;<span class="c-key">"konteks_peran"</span>: <span class="c-str">"admin"</span>,<br />
           &nbsp;&nbsp;<span class="c-key">"aksi"</span>: <span class="c-str">"KONFIRMASI_PERPANJANGAN"</span>,<br />
           &nbsp;&nbsp;<span class="c-key">"pesan_commit"</span>: <span class="c-str">"Disetujui +3 hari karena libur sekolah"</span>,<br />
           &nbsp;&nbsp;<span class="c-key">"tabel"</span>: <span class="c-str">"pinjaman"</span>,<br />
@@ -1261,12 +1247,12 @@
           { title: "Buku Favorit", val: "4", sub: "Koleksi tersimpan", color: "#093A71", icon: "F" }
         ]
       },
-      pustakawan: {
-        roleLabel: "Ibu Nurul Hidayah (Pustakawan)",
-        initials: "NH",
-        topbar: "PERPUSTAKAAN SMK TI BAZMA — WORKSPACE PUSTAKAWAN",
-        title: "Dashboard Operasional Pustakawan",
-        subtitle: "Ringkasan sirkulasi harian, koleksi eksemplar fisik, pengajuan siap diambil, dan Stock Opname.",
+      admin: {
+        roleLabel: "Pak Ridwan (Admin)",
+        initials: "PR",
+        topbar: "PERPUSTAKAAN SMK TI BAZMA - WORKSPACE ADMIN",
+        title: "Dashboard Operasional & Manajemen Admin",
+        subtitle: "Akses penuh Meja Sirkulasi, Koleksi, Stock Opname, Denda, CRUD warga, kebijakan, dan audit log seluruh sistem.",
         cta: "Buka Meja Sirkulasi",
         menus: [
           { name: "Dashboard", active: true },
@@ -1275,30 +1261,6 @@
           { name: "Koleksi & Master Buku", active: false },
           { name: "Eksemplar & Barcode", active: false },
           { name: "Stock Opname (Fast-Scan)", active: false },
-          { name: "Denda & Pelunasan", active: false },
-          { name: "Ajuan Perpanjangan", active: false },
-          { name: "Aktivitas Saya", active: false },
-          { name: "Manajemen Role (Terkunci)", active: false, locked: true }
-        ],
-        kpis: [
-          { title: "Total Katalog", val: "364", sub: "Judul terdaftar", color: "#1D4ED8", icon: "K" },
-          { title: "Total Eksemplar", val: "483", sub: "Unit fisik ber-barcode", color: "#D97706", icon: "E" },
-          { title: "Pengajuan Menunggu", val: "6", sub: "Siap diambil (24 jam)", color: "#059669", icon: "P" },
-          { title: "Pinjaman Terlambat", val: "3", sub: "Perlu tindak lanjut", color: "#E40014", icon: "T" }
-        ]
-      },
-      admin: {
-        roleLabel: "Pak Ridwan (Admin)",
-        initials: "PR",
-        topbar: "PERPUSTAKAAN SMK TI BAZMA — WORKSPACE ADMIN",
-        title: "Dashboard Manajemen & Sistem Admin",
-        subtitle: "Akses penuh operasional Pustakawan ditambah CRUD warga, pengaturan kebijakan, dan audit log seluruh sistem.",
-        cta: "Cetak Laporan Bulanan",
-        menus: [
-          { name: "Dashboard", active: true },
-          { name: "Meja Sirkulasi", active: false },
-          { name: "Koleksi & Eksemplar", active: false },
-          { name: "Stock Opname", active: false },
           { name: "Keanggotaan & Buka Blokir", active: false },
           { name: "Denda & Koreksi Massal", active: false },
           { name: "Audit Log & Commit History", active: false },
@@ -1307,30 +1269,30 @@
         ],
         kpis: [
           { title: "Total Katalog", val: "364", sub: "Judul terdaftar", color: "#1D4ED8", icon: "K" },
-          { title: "Total Eksemplar", val: "483", sub: "Eksemplar koleksi", color: "#D97706", icon: "E" },
-          { title: "Total Peminjaman", val: "45", sub: "Transaksi bulan ini", color: "#059669", icon: "P" },
+          { title: "Total Eksemplar", val: "483", sub: "Unit fisik ber-barcode", color: "#D97706", icon: "E" },
+          { title: "Pengajuan Menunggu", val: "6", sub: "Siap diambil (24 jam)", color: "#059669", icon: "P" },
           { title: "Jumlah Anggota", val: "512", sub: "Siswa, guru, & staf", color: "#0891B2", icon: "A" }
         ]
       },
       master: {
         roleLabel: "Admin Master (Sistem Utama)",
         initials: "AM",
-        topbar: "PERPUSTAKAAN SMK TI BAZMA — WORKSPACE ADMIN MASTER",
+        topbar: "PERPUSTAKAAN SMK TI BAZMA - WORKSPACE ADMIN MASTER",
         title: "Pusat Kendali Tertinggi (Admin Master)",
         subtitle: "Memiliki seluruh wewenang Admin plus halaman eksklusif pengelolaan akun Admin lainnya. Kebal dihapus.",
         cta: "Kelola Akun Admin",
         menus: [
           { name: "Dashboard Sistem", active: true },
           { name: "Manajemen Akun Admin (Eksklusif)", active: false },
-          { name: "Pemberian / Pencabutan Role", active: false },
+          { name: "Pemberian / Pencabutan Role Admin", active: false },
           { name: "Audit Log (Immutable)", active: false },
           { name: "Pengaturan Kebijakan Global", active: false },
           { name: "Seluruh Fitur Sirkulasi & Koleksi", active: false },
           { name: "Stock Opname & Denda", active: false }
         ],
         kpis: [
-          { title: "Akun Admin Aktif", val: "3", sub: "Dikelola eksklusif oleh Master", color: "#132B6D", icon: "M" },
-          { title: "Akun Pustakawan", val: "4", sub: "Permission operasional merata", color: "#1D4ED8", icon: "P" },
+          { title: "Akun Admin Aktif", val: "4", sub: "Dikelola eksklusif oleh Master", color: "#132B6D", icon: "M" },
+          { title: "Anggota Warga", val: "512", sub: "Siswa, guru, & staf", color: "#1D4ED8", icon: "W" },
           { title: "Total Commit Log", val: "1.284", sub: "Append-only & terproteksi", color: "#059669", icon: "L" },
           { title: "Status Keamanan", val: "Kebal", sub: "Master tidak bisa dihapus", color: "#093A71", icon: "S" }
         ]
@@ -1409,7 +1371,7 @@
       document.getElementById(panelId).classList.add('active');
     }
 
-    switchWorkspace('pustakawan');
+    switchWorkspace('admin');
   </script>
 </body>
 </html>

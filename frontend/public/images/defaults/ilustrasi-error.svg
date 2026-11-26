@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" width="320" height="240" fill="none">
+  <!-- Ilustrasi Error 320x240 -->
+  <rect width="320" height="240" rx="12" fill="#FDEBEC"/>
+  <rect x="2" y="2" width="316" height="236" rx="10" stroke="#F8C6C8" stroke-width="2"/>
+
+  <!-- Segitiga Peringatan / Error -->
+  <path d="M160 50 L230 170 H90 Z" fill="#FFFFFF" stroke="#DA1E28" stroke-width="3" stroke-linejoin="round"/>
+  
+  <line x1="160" y1="95" x2="160" y2="135" stroke="#DA1E28" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="160" cy="152" r="3" fill="#DA1E28"/>
+
+  <!-- Ornamen Aksen Gelombang Rusak -->
+  <path d="M60 195 Q 80 185, 100 195 T 140 195" stroke="#B3141B" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+  <path d="M180 195 Q 200 185, 220 195 T 260 195" stroke="#B3141B" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+</svg>

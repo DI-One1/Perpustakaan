@@ -52,14 +52,14 @@ Sesuai [Spesifikasi Teknis Backend](spesifikasi-backend.md) dan [Standar Penamaa
 
 ## 3. Menanam Data Seed Pengujian (`seed.js`)
 
-Untuk mengisi database dengan master buku, eksemplar ber-barcode, admin, pustakawan, dan persona pengujian aturan sirkulasi:
+Untuk mengisi database dengan master buku, eksemplar ber-barcode, admin, dan persona pengujian aturan sirkulasi:
 ```powershell
 npm --prefix frontend run db:seed
 ```
 
 ### Persona Pengujian yang Dihasilkan:
 1. **Pak Ridwan Santoso** (`usr-admin` / `ADMIN-001`): Admin Master sistem.
-2. **Ibu Nurul Hidayah** (`usr-pustakawan-1` / `PUST-001`): Pustakawan operasional.
+2. **Ibu Nurul Hidayah** (`usr-admin-2` / `ADM-002`): Admin operasional perpustakaan.
 3. **Muhammad Fadhil** (`usr-warga-1` / `0061234567`): Warga dengan status pengajuan peminjaman siap diambil.
 4. **Ahmad Dahlan** (`usr-warga-2` / `0061234568`): Warga bersih tanpa pinjaman maupun denda.
 5. **Salma Zahira** (`usr-warga-3` / `0061234569`): Warga dengan pinjaman aktif sisa 2 hari jatuh tempo.

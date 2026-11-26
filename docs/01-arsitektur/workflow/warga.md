@@ -1,6 +1,6 @@
 # Workflow Warga (Pemustaka)
 
-Pengalaman utama BILIK untuk siswa, guru, staf sekolah, serta Pustakawan/Admin saat beralih ke **Mode Warga**.
+Pengalaman utama BILIK untuk siswa, guru, staf sekolah, serta Admin saat beralih ke **Mode Warga**.
 
 ---
 

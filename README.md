@@ -9,17 +9,16 @@
 **BILIK (Basis Informasi & Literasi Islam Terpadu Kejuruan)** menggabungkan pengalaman pemustaka ala e-commerce (katalog, pencarian, favorit, rating, ulasan, pengajuan peminjaman, dan antrean FIFO) dengan sistem operasional meja sirkulasi fisik berbasis barcode eksemplar (`BK-xxxx`), stock opname *fast-scan*, denda terukur, dan audit log bergaya Git commit.
 
 ### Prinsip Utama: *One Platform, One Identity, Multiple Workspaces*
-Setiap pengguna hanya memiliki **1 identitas akun tunggal**. Staf (`pustakawan`, `admin`, `admin_master`) dapat berpindah antara **Mode Warga** dan **Workspace Pengelola** tanpa membuat akun kedua.
+Setiap pengguna hanya memiliki **1 identitas akun tunggal**. Pengelola (`admin`, `admin_master`) dapat berpindah antara **Mode Warga** dan **Workspace Admin** tanpa membuat akun kedua.
 
 ---
 
-## Peran Pengguna
+## Peran Pengguna (2 Peran Utama: Warga & Admin)
 
 | Peran | Akses & Wewenang |
 |---|---|
 | **Warga** | Eksplorasi katalog, favorit, rating/ulasan, **Pengajuan Peminjaman** (kunci 24 jam), **Antre Buku (FIFO)**, perpanjangan mandiri, dan kartu anggota digital. |
-| **Pustakawan** | *Broad Operational Access*: Meja Sirkulasi (scan kartu + barcode fisik), validasi/penolakan pengajuan, pengembalian & denda, CRUD master buku/kategori/eksemplar, dan Stock Opname. |
-| **Admin** | *Full Access* operasional & manajemen data (CRUD seluruh data **kecuali** `log_audit` & `commit`), pengaturan kebijakan, buka blokir akun, dan melihat seluruh log audit. |
+| **Admin** | *Full Access* operasional & manajemen data: Meja Sirkulasi (scan kartu + barcode fisik), validasi/penolakan pengajuan, pengembalian & denda, CRUD master buku/kategori/eksemplar, Stock Opname *Fast-Scan*, CRUD warga, pengaturan kebijakan, buka blokir akun, dan melihat seluruh log audit (kecuali mengubah/menghapus `log_audit` & `commit`). |
 | **Admin Master** | 1 akun utama bawaan yang kebal dihapus serta memiliki wewenang eksklusif CRUD dan pencabutan hak akses akun `admin` lainnya. |
 
 ---

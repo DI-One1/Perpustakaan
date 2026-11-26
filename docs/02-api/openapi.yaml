@@ -3,7 +3,7 @@ info:
   title: API Perpustakaan Digital SMK TI Bazma ("BILIK")
   description: |
     Kontrak API resmi sistem informasi perpustakaan digital BILIK - SMK TI Bazma di bawah Yayasan BAZMA.
-    Mencakup sirkulasi warga (online booking, antrean FIFO, perpanjangan mandiri, denda) dan meja sirkulasi staf pustakawan.
+    Mencakup sirkulasi warga (pengajuan peminjaman, antrean FIFO, perpanjangan mandiri, denda) dan meja sirkulasi Admin.
     Menggunakan format error terstandarisasi RFC 9457 (application/problem+json).
   version: 1.0.0
 servers:
@@ -17,7 +17,7 @@ paths:
   /auth/masuk:
     post:
       summary: Masuk ke Sistem (Login)
-      description: Otentikasi warga atau pustakawan/admin menggunakan Nomor Induk (NISN/NIP) dan kata sandi. Mengembalikan cookie httpOnly dan data sesi.
+      description: Otentikasi warga atau admin menggunakan Nomor Induk (NISN/NIP) dan kata sandi. Mengembalikan cookie httpOnly dan data sesi.
       operationId: login
       requestBody:
         required: true
@@ -309,7 +309,7 @@ paths:
       summary: Ajukan Perpanjangan Pinjaman
       description: |
         Mengajukan perpanjangan durasi pinjaman untuk buku yang sedang aktif dipinjam.
-        Wajib menyertakan alasan. Pustakawan akan memproses dan dapat menyesuaikan durasi hari sebelum konfirmasi.
+        Wajib menyertakan alasan. Admin akan memproses dan dapat menyesuaikan durasi hari sebelum konfirmasi.
       operationId: createAjuanPerpanjangan
       requestBody:
         required: true
@@ -478,14 +478,14 @@ paths:
                     example: true
 
   # ============================================================================
-  # 6. MEJA SIRKULASI PUSTAKAWAN (STAFF DESK ENDPOINTS)
+  # 6. MEJA SIRKULASI ADMIN (STAFF DESK ENDPOINTS)
   # ============================================================================
   /staff/sirkulasi/scan-warga:
     post:
-      summary: Validasi Identitas Warga di Meja Pustakawan
+      summary: Validasi Identitas Warga di Meja Admin
       description: |
-        Dipanggil saat pustakawan melakukan scan kartu anggota atau input manual NISN/identitas warga.
-        Mengembalikan ringkasan data warga, kelayakan pinjam, status denda aktif, pinjaman berjalan, atau ajuan booking siap diambil.
+        Dipanggil saat admin melakukan scan kartu anggota atau input manual NISN/identitas warga.
+        Mengembalikan ringkasan data warga, kelayakan pinjam, status denda aktif, pinjaman berjalan, atau ajuan pengajuan peminjaman siap diambil.
       operationId: staffScanWarga
       requestBody:
         required: true
@@ -516,7 +516,7 @@ paths:
     post:
       summary: Scan Barcode Eksemplar Buku Fisik
       description: |
-        Dipanggil saat pustakawan melakukan scan barcode eksemplar fisik buku (`EXM-xxxx-xx`).
+        Dipanggil saat admin melakukan scan barcode eksemplar fisik buku (`EXM-xxxx-xx`).
         Memeriksa apakah eksemplar berstatus 'tersedia' untuk dipinjam langsung, atau berstatus 'dibooking' oleh warga tertentu.
         Jika seluruh stok umum kosong/terbooking, sistem menampilkan notifikasi stok penuh dan menolak pengisian pinjam offline.
       operationId: staffScanEksemplar
@@ -546,10 +546,10 @@ paths:
 
   /staff/sirkulasi/konfirmasi-pinjam:
     post:
-      summary: Konfirmasi Peminjaman Buku di Meja Pustakawan
+      summary: Konfirmasi Peminjaman Buku di Meja Admin
       description: |
-        Menyelesaikan transaksi peminjaman (baik alur Booking Online maupun Pinjam Langsung Offline).
-        Pustakawan dapat menyesuaikan durasi pinjam hari (default 7 hari) via tombol stepper -/+.
+        Menyelesaikan transaksi peminjaman (baik alur Pengajuan Peminjaman Online maupun Pinjam Langsung Offline).
+        Admin dapat menyesuaikan durasi pinjam hari (default 7 hari) via tombol stepper -/+.
       operationId: staffKonfirmasiPinjam
       requestBody:
         required: true
@@ -575,7 +575,7 @@ paths:
     post:
       summary: Proses Pengembalian Buku Fisik
       description: |
-        Pustakawan menerima pengembalian buku fisik.
+        Admin menerima pengembalian buku fisik.
         Sistem otomatis menghitung keterlambatan berdasarkan kalender Asia/Jakarta.
         Jika terlambat, otomatis menerbitkan data denda belum lunas dan menghalangi peminjaman baru sampai dilunasi.
         Jika ada antrean online FIFO untuk judul ini, antrean terdepan otomatis dinaikkan statusnya menjadi booking siap diambil.
@@ -610,8 +610,8 @@ paths:
 
   /staff/denda/{id}/bayar:
     post:
-      summary: Pelunasan Denda Keterlambatan di Meja Pustakawan
-      description: Pustakawan memverifikasi pelunasan denda tunai/qris, membuka kembali kelayakan pinjam warga.
+      summary: Pelunasan Denda Keterlambatan di Meja Admin
+      description: Admin memverifikasi pelunasan denda tunai/qris, membuka kembali kelayakan pinjam warga.
       operationId: staffPelunasanDenda
       parameters:
         - name: id
@@ -677,7 +677,7 @@ components:
           nullable: true
         peran:
           type: string
-          enum: [admin, pustakawan, warga]
+          enum: [admin, admin_master, warga]
         jenis_warga:
           type: string
           enum: [siswa, guru, staf]
@@ -1021,7 +1021,7 @@ components:
         durasi_hari:
           type: integer
           default: 7
-          description: Durasi pinjam yang disetujui pustakawan (default 7 hari, diubah via stepper)
+          description: Durasi pinjam yang disetujui admin (default 7 hari, diubah via stepper)
 
     StaffTransaksiPinjamResult:
       type: object
@@ -1127,7 +1127,7 @@ components:
             $ref: '#/components/schemas/ProblemDetails'
 
     ProblemForbidden:
-      description: Akses ditolak (memerlukan peran Pustakawan / Admin)
+      description: Akses ditolak (memerlukan peran Admin)
       content:
         application/problem+json:
           schema:

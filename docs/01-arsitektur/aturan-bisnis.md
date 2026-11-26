@@ -14,7 +14,7 @@
    - 1 posisi antrean FIFO (`menunggu`).
 2. **Durasi Peminjaman Standar:**
    - Default **7 hari kalender**.
-   - Dapat disesuaikan secara manual oleh Pustakawan/Admin saat konfirmasi di meja sirkulasi.
+   - Dapat disesuaikan secara manual oleh Admin saat konfirmasi di meja sirkulasi.
 3. **Tarif Denda Keterlambatan Pengembalian:**
    - **Rp500 / hari / buku**, bersifat akumulatif berdasarkan selisih hari kalender (zona waktu `Asia/Jakarta`, hari libur tetap terhitung).
    - Terlambat mengambil pengajuan (*no-show* melewati 24 jam) **TIDAK dikenakan denda uang**, melainkan dikenakan mekanisme poin pelanggaran dan pemblokiran.
@@ -57,7 +57,7 @@
 
 1. **Pembatalan Dua Pihak (`batal`):**
    - **Oleh Warga (Pengaju):** Warga boleh membatalkan pengajuan atau antrean miliknya sendiri sebelum diproses petugas.
-   - **Oleh Petugas (Pustakawan/Admin):** Petugas dapat membatalkan pengajuan sebelum serah terima dengan memilih alasan wajib (`rusak` atau `lainnya` + keterangan wajib).
+   - **Oleh Petugas (Admin):** Admin dapat membatalkan pengajuan sebelum serah terima dengan memilih alasan wajib (`rusak` atau `lainnya` + keterangan wajib).
 2. **Penolakan oleh Petugas (`ditolak`):**
    - Petugas dapat menolak pengajuan peminjaman atau perpanjangan dengan menyertakan alasan penolakan yang ringkas dan tampil pada riwayat warga.
 
@@ -69,7 +69,7 @@
 2. **Boleh Diajukan Walau Ada Antrean:** Warga tetap diperbolehkan mengajukan permohonan perpanjangan meski terdapat antrean pada buku tersebut, karena sifatnya pengajuan yang diputuskan manual oleh petugas.
 3. **Alur Persetujuan Petugas:**
    - Pengajuan mengirim notifikasi ke petugas (termasuk tautan langsung/deep-link dari email petugas menuju halaman konfirmasi).
-   - Pustakawan/Admin dapat **menyetujui sesuai ajuan**, **mengubah jumlah hari** melalui stepper (`-`/`+`), atau **menolak** dengan alasan.
+   - Admin dapat **menyetujui sesuai ajuan**, **mengubah jumlah hari** melalui stepper (`-`/`+`), atau **menolak** dengan alasan.
    - Setelah dikonfirmasi, tanggal jatuh tempo dan *countdown* pinjaman warga langsung bertambah secara real-time.
 
 ---
@@ -91,4 +91,4 @@
 
 1. **Pelunasan Penuh (V1):** Pembayaran denda dilakukan secara tunai/manual di meja petugas dan dikonfirmasi lunas penuh per transaksi denda (`belum_lunas` $\rightarrow$ `lunas`). Pembayaran cicilan sebagian belum didukung di V1.
 2. **Pembukaan Blokir Otomatis:** Begitu seluruh denda warga berstatus `lunas` atau `dibebaskan`, hambatan pinjam karena denda seketika terbuka.
-3. **CRUD & Koreksi Massal:** Admin dan Pustakawan berwenang melakukan koreksi nominal atau pembebasan denda (termasuk memilih beberapa warga sekaligus / *batch*), dan setiap konfirmasi wajib menyertakan **catatan commit** ke dalam `log_audit`.
+3. **CRUD & Koreksi Massal:** Admin berwenang melakukan koreksi nominal atau pembebasan denda (termasuk memilih beberapa warga sekaligus / *batch*), dan setiap konfirmasi wajib menyertakan **catatan commit** ke dalam `log_audit`.
