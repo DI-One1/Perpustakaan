@@ -15,19 +15,100 @@ import { Button } from "@/components/ui/button";
 import { ReservationPopover } from "@/components/layout/reservation-popover";
 import { UserNav } from "@/components/layout/user-nav";
 import { useAuth } from "@/lib/auth-context";
-import { MOCK_CATEGORIES, MOCK_POPULAR_SEARCHES } from "@/mocks";
+import { MOCK_CATEGORIES, MOCK_POPULAR_SEARCHES, MOCK_BOOKS } from "@/mocks";
 
 export function Header() {
   const router = useRouter();
   const { user, isLoading } = useAuth();
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedCategory, setSelectedCategory] = React.useState("Semua Kategori");
+  const [isSuggestionsOpen, setIsSuggestionsOpen] = React.useState(false);
+  const searchContainerRef = React.useRef<HTMLDivElement>(null);
+
+  const queryClean = searchQuery.trim().toLowerCase();
+
+  // 1. Rekomendasi kata kunci & judul buku dinamis
+  const keywordSuggestions = React.useMemo(() => {
+    if (!queryClean) return [];
+    const list: string[] = [];
+
+    // Tambahkan query teks yang sedang diketik pengguna
+    list.push(searchQuery.trim());
+
+    // Cari judul buku yang cocok
+    MOCK_BOOKS.forEach((book) => {
+      if (
+        book.judul.toLowerCase().includes(queryClean) ||
+        book.penulis.toLowerCase().includes(queryClean)
+      ) {
+        if (!list.some((item) => item.toLowerCase() === book.judul.toLowerCase())) {
+          list.push(book.judul);
+        }
+      }
+    });
+
+    return list.slice(0, 5);
+  }, [queryClean, searchQuery]);
+
+  // 2. Rekomendasi nama penulis yang relevan dari data buku (Gambar 4 & 5)
+  const authorSuggestions = React.useMemo(() => {
+    if (!queryClean) return [];
+    const map = new Map<string, { nama: string; jumlahBuku: number }>();
+
+    MOCK_BOOKS.forEach((book) => {
+      if (book.penulis.toLowerCase().includes(queryClean)) {
+        const item = map.get(book.penulis);
+        if (item) {
+          item.jumlahBuku += 1;
+        } else {
+          map.set(book.penulis, { nama: book.penulis, jumlahBuku: 1 });
+        }
+      }
+    });
+
+    return Array.from(map.values()).slice(0, 3);
+  }, [queryClean]);
+
+  // Tutup dropdown autocomplete saat klik di luar
+  React.useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(e.target as Node)
+      ) {
+        setIsSuggestionsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSuggestionsOpen(false);
     if (searchQuery.trim()) {
-      router.push(`/katalog?q=${encodeURIComponent(searchQuery.trim())}`);
+      const catParam =
+        selectedCategory !== "Semua Kategori"
+          ? `&kategori=${encodeURIComponent(selectedCategory)}`
+          : "";
+      router.push(`/katalog?q=${encodeURIComponent(searchQuery.trim())}${catParam}`);
+    } else if (selectedCategory !== "Semua Kategori") {
+      router.push(`/katalog?kategori=${encodeURIComponent(selectedCategory)}`);
+    } else {
+      router.push("/katalog");
     }
+  };
+
+  const handleSelectKeyword = (term: string) => {
+    setSearchQuery(term);
+    setIsSuggestionsOpen(false);
+    router.push(`/katalog?q=${encodeURIComponent(term)}`);
+  };
+
+  const handleSelectAuthor = (authorName: string) => {
+    setSearchQuery(authorName);
+    setIsSuggestionsOpen(false);
+    router.push(`/katalog?q=${encodeURIComponent(authorName)}&penulis=${encodeURIComponent(authorName)}`);
   };
 
   return (
@@ -61,17 +142,17 @@ export function Header() {
             </div>
           </Link>
 
-          {/* Tengah: Search Component Terintegrasi & Popular Search Chips (Satu Kelompok Visual) */}
-          <div className="flex-1 max-w-[620px] hidden md:flex flex-col gap-2">
+          {/* Tengah: Search Component Terintegrasi & Popular Search Chips & Dynamic Autocomplete Suggestion */}
+          <div ref={searchContainerRef} className="relative flex-1 max-w-[620px] hidden md:flex flex-col gap-2">
             <form
               onSubmit={handleSearchSubmit}
-              className="relative flex h-[44px] w-full items-center rounded-2xl border border-input bg-card focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all shadow-xs overflow-hidden"
+              className="relative flex h-[44px] w-full items-center rounded-2xl border border-input bg-card focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all shadow-xs"
             >
               {/* Bagian 1: Category Selector Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger
                   type="button"
-                  className="flex h-full items-center gap-1.5 border-r border-border px-3.5 text-[13px] font-medium text-foreground hover:bg-background focus-visible:outline-none shrink-0 transition-colors"
+                  className="flex h-full items-center gap-1.5 border-r border-border px-3.5 text-[13px] font-medium text-foreground hover:bg-background focus-visible:outline-none shrink-0 transition-colors rounded-l-2xl"
                 >
                   <span className="max-w-[130px] truncate">{selectedCategory}</span>
                   <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
@@ -101,22 +182,84 @@ export function Header() {
                   id="desktop-search-input"
                   type="search"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setIsSuggestionsOpen(true);
+                  }}
+                  onFocus={() => {
+                    if (searchQuery.trim().length > 0) {
+                      setIsSuggestionsOpen(true);
+                    }
+                  }}
                   placeholder="Cari judul buku, penulis, atau ISBN..."
                   className="w-full bg-transparent px-3.5 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none"
                   aria-label="Cari buku, penulis, atau ISBN"
+                  autoComplete="off"
                 />
               </div>
 
               {/* Bagian 3: Search Action Button */}
               <button
                 type="submit"
-                className="flex h-full items-center justify-center bg-primary px-5 text-white hover:bg-primary-hover focus-visible:outline-none transition-colors shrink-0"
+                className="flex h-full items-center justify-center bg-primary px-5 text-white hover:bg-primary-hover focus-visible:outline-none transition-colors shrink-0 rounded-r-2xl"
                 aria-label="Submit pencarian"
               >
                 <Search className="h-4 w-4 text-white" />
               </button>
             </form>
+
+            {/* Floating Search Autocomplete Dropdown (Persis Gambar 4 & 5) */}
+            {isSuggestionsOpen && queryClean.length >= 1 && (keywordSuggestions.length > 0 || authorSuggestions.length > 0) && (
+              <div className="absolute top-[48px] left-0 right-0 z-50 rounded-2xl border border-border bg-white shadow-xl overflow-hidden p-3 space-y-3 animate-in fade-in-50 duration-150">
+                {/* 1. Rekomendasi Kata Kunci & Judul */}
+                {keywordSuggestions.length > 0 && (
+                  <div className="space-y-0.5">
+                    {keywordSuggestions.map((term, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => handleSelectKeyword(term)}
+                        className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-left text-xs font-medium text-foreground hover:bg-primary-soft hover:text-primary transition-colors cursor-pointer group"
+                      >
+                        <Search className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary shrink-0" />
+                        <span className="truncate">{term}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* 2. Rekomendasi Penulis (Section Penulis Sesuai Gambar 4 & 5) */}
+                {authorSuggestions.length > 0 && (
+                  <div className="pt-2 border-t border-border/70 space-y-1.5">
+                    <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider px-2 block">
+                      Penulis
+                    </span>
+                    <div className="space-y-1">
+                      {authorSuggestions.map((author) => (
+                        <button
+                          key={author.nama}
+                          type="button"
+                          onClick={() => handleSelectAuthor(author.nama)}
+                          className="w-full flex items-center gap-3 p-2 rounded-xl text-left hover:bg-primary-soft transition-colors cursor-pointer group"
+                        >
+                          <div className="relative h-9 w-9 rounded-full bg-primary-soft border border-border flex items-center justify-center text-primary font-bold text-xs shrink-0 overflow-hidden">
+                            <User className="h-4 w-4 text-primary" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs font-bold text-heading group-hover:text-primary transition-colors truncate">
+                              {author.nama}
+                            </p>
+                            <p className="text-[11px] text-muted-foreground truncate">
+                              {author.jumlahBuku} koleksi buku di perpustakaan
+                            </p>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Popular Search Chips (Tepat di bawah search bar, sejajar sisi kiri search bar) */}
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
@@ -148,10 +291,10 @@ export function Header() {
               // Status: BELUM LOGIN (Tombol Masuk Biru Royal Sesuai Screenshot)
               <Button
                 asChild
-                className="h-[38px] px-5 rounded-[8px] bg-primary hover:bg-primary-hover text-white text-[13px] font-semibold gap-2 shadow-xs transition-colors"
+                className="h-[40px] px-5 gap-2"
               >
                 <Link href="/masuk">
-                  <User className="h-4 w-4 text-white" />
+                  <User className="h-4 w-4" />
                   <span>Masuk</span>
                 </Link>
               </Button>

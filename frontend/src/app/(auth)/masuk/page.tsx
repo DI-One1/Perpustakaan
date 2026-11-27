@@ -149,7 +149,7 @@ function LoginForm() {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full text-xs sm:text-sm font-semibold h-10 gap-2 shadow-xs bg-primary hover:bg-primary-hover text-white rounded-[8px]"
+                className="w-full text-xs sm:text-sm font-semibold h-11 gap-2"
               >
                 <LogIn className="h-4 w-4 text-white" />
                 <span>{isSubmitting ? "Memverifikasi..." : "Masuk ke Akun"}</span>
@@ -170,7 +170,7 @@ function LoginForm() {
                 <button
                   type="button"
                   onClick={() => handleQuickDemoLogin("warga")}
-                  className="flex items-center justify-between p-3 rounded-[10px] border border-border bg-background hover:bg-primary-soft hover:border-primary/40 transition-colors text-left group"
+                  className="flex items-center justify-between p-3.5 rounded-xl border border-border bg-background hover:bg-primary-soft hover:border-primary/40 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-4px_rgba(19,43,109,0.12)] text-left group cursor-pointer"
                 >
                   <div className="flex items-center gap-2.5">
                     <div className="h-8 w-8 rounded-full bg-primary-soft flex items-center justify-center text-primary font-bold text-xs">
@@ -192,7 +192,7 @@ function LoginForm() {
                 <button
                   type="button"
                   onClick={() => handleQuickDemoLogin("pustakawan")}
-                  className="flex items-center justify-between p-3 rounded-[10px] border border-border bg-background hover:bg-emerald-50 hover:border-emerald-300 transition-colors text-left group"
+                  className="flex items-center justify-between p-3.5 rounded-xl border border-border bg-background hover:bg-emerald-50 hover:border-emerald-300 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-4px_rgba(16,185,129,0.15)] text-left group cursor-pointer"
                 >
                   <div className="flex items-center gap-2.5">
                     <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-xs">
@@ -214,7 +214,7 @@ function LoginForm() {
                 <button
                   type="button"
                   onClick={() => handleQuickDemoLogin("admin")}
-                  className="flex items-center justify-between p-3 rounded-[10px] border border-border bg-background hover:bg-amber-50 hover:border-amber-300 transition-colors text-left group"
+                  className="flex items-center justify-between p-3.5 rounded-xl border border-border bg-background hover:bg-amber-50 hover:border-amber-300 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_8px_18px_-4px_rgba(245,158,11,0.18)] text-left group cursor-pointer"
                 >
                   <div className="flex items-center gap-2.5">
                     <div className="h-8 w-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold text-xs">

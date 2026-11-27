@@ -668,7 +668,7 @@ export const MOCK_BOOKS: MockBook[] = [
     kategori_id: "cat-7",
     kategori_nama: "Pengembangan Diri",
     subkategori: "Finansial / Literasi Keuangan",
-    bahasa: "Indonesia",
+    bahasa: "Inggris",
     jumlah_halaman: 268,
     edisi: "Cetakan Kesepuluh",
     total_eksemplar: 16,

@@ -254,29 +254,31 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
               {/* KOLOM KIRI: SAMPUL BUKU & THUMBNAILS DI BAWAHNYA */}
               <div className="md:col-span-5 lg:col-span-4 space-y-4">
-                <div className="relative mx-auto max-w-[280px] sm:max-w-[300px] rounded-xl overflow-hidden border border-border/80 shadow-md bg-muted/20">
+                <div className="relative mx-auto max-w-[280px] sm:max-w-[310px] rounded-xl overflow-hidden border border-border/80 shadow-md bg-muted/20">
                   <BookCover
                     src={galleryImages[activeImageIndex]}
                     judul={book.judul}
                     kategoriSlug={book.kategori_id.replace("cat-", "")}
                     priority
-                    className="w-full aspect-[2/3] object-cover"
+                    fit="cover"
+                    borderless
+                    className="w-full aspect-[2/3]"
                   />
                 </div>
 
                 {/* Thumbnail Gambar Buku di Bawah Cover */}
                 {galleryImages.length > 1 && (
-                  <div className="flex items-center justify-center gap-2 pt-1 overflow-x-auto no-scrollbar">
+                  <div className="flex items-center justify-center gap-2.5 py-2 px-1 overflow-x-auto overflow-y-hidden no-scrollbar">
                     {galleryImages.map((img, idx) => (
                       <button
                         key={idx}
                         type="button"
                         onClick={() => setActiveImageIndex(idx)}
                         className={cn(
-                          "relative h-16 w-11 rounded-md overflow-hidden border-2 transition-all shrink-0",
+                          "relative w-12 sm:w-14 aspect-[2/3] rounded-lg overflow-hidden border-2 transition-all shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
                           activeImageIndex === idx
-                            ? "border-primary ring-2 ring-primary/20 scale-105"
-                            : "border-border/70 opacity-70 hover:opacity-100"
+                            ? "border-primary ring-2 ring-primary/25 shadow-xs"
+                            : "border-border/80 opacity-70 hover:opacity-100 hover:border-primary/50"
                         )}
                         aria-label={`Lihat gambar sampul ${idx + 1}`}
                       >
@@ -284,7 +286,9 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
                           src={img}
                           judul={`${book.judul} ${idx + 1}`}
                           kategoriSlug={book.kategori_id.replace("cat-", "")}
-                          className="h-full w-full object-cover"
+                          fit="cover"
+                          borderless
+                          className="h-full w-full"
                         />
                       </button>
                     ))}
@@ -305,7 +309,7 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
                   <p className="text-xs text-muted-foreground">
                     {book.tahun}
                   </p>
-                  
+
                   {/* Rating & Ulasan */}
                   <div className="flex items-center gap-2 pt-1 text-xs font-semibold">
                     <div className="flex items-center gap-1 text-amber-500">
@@ -453,7 +457,7 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
                     type="button"
                     variant="outline"
                     onClick={() => handleActionClick("antre")}
-                    className="flex-1 sm:flex-none sm:min-w-[180px] h-11 text-xs font-bold border-primary text-primary hover:bg-primary/10 gap-2"
+                    className="flex-1 sm:flex-none sm:min-w-[180px] gap-2"
                   >
                     <Users className="h-4 w-4" />
                     <span>Antre Buku</span>
@@ -462,7 +466,7 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
                   <Button
                     type="button"
                     onClick={() => handleActionClick("booking")}
-                    className="flex-1 sm:flex-none sm:min-w-[180px] h-11 text-xs font-bold gap-2 shadow-xs"
+                    className="flex-1 sm:flex-none sm:min-w-[190px] gap-2"
                   >
                     <Clock className="h-4 w-4" />
                     <span>Ajukan Peminjaman</span>
@@ -649,11 +653,10 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
                       aria-label={`${starVal} dari 5 bintang`}
                     >
                       <Star
-                        className={`h-7 w-7 transition-colors ${
-                          isFilled
-                            ? "fill-amber-400 text-amber-500"
-                            : "text-muted-foreground/40 hover:text-amber-400"
-                        }`}
+                        className={`h-7 w-7 transition-colors ${isFilled
+                          ? "fill-amber-400 text-amber-500"
+                          : "text-muted-foreground/40 hover:text-amber-400"
+                          }`}
                       />
                     </button>
                   );
@@ -699,77 +702,70 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
                 <button
                   type="button"
                   onClick={() => setActiveFilter("semua")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
-                    activeFilter === "semua"
-                      ? "bg-primary text-primary-foreground border-primary shadow-xs"
-                      : "bg-muted/40 text-foreground border-border hover:bg-muted"
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${activeFilter === "semua"
+                    ? "bg-primary text-primary-foreground border-primary shadow-xs"
+                    : "bg-muted/40 text-foreground border-border hover:bg-muted"
+                    }`}
                 >
                   Semua ({totalReviewsCount})
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveFilter("5")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
-                    activeFilter === "5"
-                      ? "bg-primary text-primary-foreground border-primary shadow-xs"
-                      : "bg-muted/40 text-foreground border-border hover:bg-muted"
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${activeFilter === "5"
+                    ? "bg-primary text-primary-foreground border-primary shadow-xs"
+                    : "bg-muted/40 text-foreground border-border hover:bg-muted"
+                    }`}
                 >
                   5 Bintang ({count5})
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveFilter("4")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
-                    activeFilter === "4"
-                      ? "bg-primary text-primary-foreground border-primary shadow-xs"
-                      : "bg-muted/40 text-foreground border-border hover:bg-muted"
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${activeFilter === "4"
+                    ? "bg-primary text-primary-foreground border-primary shadow-xs"
+                    : "bg-muted/40 text-foreground border-border hover:bg-muted"
+                    }`}
                 >
                   4 Bintang ({count4})
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveFilter("3")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
-                    activeFilter === "3"
-                      ? "bg-primary text-primary-foreground border-primary shadow-xs"
-                      : "bg-muted/40 text-foreground border-border hover:bg-muted"
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${activeFilter === "3"
+                    ? "bg-primary text-primary-foreground border-primary shadow-xs"
+                    : "bg-muted/40 text-foreground border-border hover:bg-muted"
+                    }`}
                 >
                   3 Bintang ({count3})
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveFilter("2")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
-                    activeFilter === "2"
-                      ? "bg-primary text-primary-foreground border-primary shadow-xs"
-                      : "bg-muted/40 text-foreground border-border hover:bg-muted"
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${activeFilter === "2"
+                    ? "bg-primary text-primary-foreground border-primary shadow-xs"
+                    : "bg-muted/40 text-foreground border-border hover:bg-muted"
+                    }`}
                 >
                   2 Bintang ({count2})
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveFilter("1")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
-                    activeFilter === "1"
-                      ? "bg-primary text-primary-foreground border-primary shadow-xs"
-                      : "bg-muted/40 text-foreground border-border hover:bg-muted"
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${activeFilter === "1"
+                    ? "bg-primary text-primary-foreground border-primary shadow-xs"
+                    : "bg-muted/40 text-foreground border-border hover:bg-muted"
+                    }`}
                 >
                   1 Bintang ({count1})
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveFilter("komentar")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
-                    activeFilter === "komentar"
-                      ? "bg-primary text-primary-foreground border-primary shadow-xs"
-                      : "bg-muted/40 text-foreground border-border hover:bg-muted"
-                  }`}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${activeFilter === "komentar"
+                    ? "bg-primary text-primary-foreground border-primary shadow-xs"
+                    : "bg-muted/40 text-foreground border-border hover:bg-muted"
+                    }`}
                 >
                   Dengan Komentar ({countComment})
                 </button>
@@ -803,9 +799,8 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
                                 {[1, 2, 3, 4, 5].map((s) => (
                                   <Star
                                     key={s}
-                                    className={`h-3 w-3 ${
-                                      s <= rev.rating ? "fill-amber-400 text-amber-500" : "text-muted-foreground/30"
-                                    }`}
+                                    className={`h-3 w-3 ${s <= rev.rating ? "fill-amber-400 text-amber-500" : "text-muted-foreground/30"
+                                      }`}
                                   />
                                 ))}
                               </div>
@@ -838,11 +833,10 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
                             <button
                               type="button"
                               onClick={() => handleVoteHelpful(rev.id, "ya")}
-                              className={`flex items-center gap-1 px-2.5 py-1 rounded text-[11px] border transition-colors ${
-                                rev.user_voted === "ya"
-                                  ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/30 font-bold"
-                                  : "bg-muted/40 hover:bg-muted text-foreground border-border"
-                              }`}
+                              className={`flex items-center gap-1 px-2.5 py-1 rounded text-[11px] border transition-colors ${rev.user_voted === "ya"
+                                ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/30 font-bold"
+                                : "bg-muted/40 hover:bg-muted text-foreground border-border"
+                                }`}
                             >
                               <ThumbsUp className="h-3 w-3" />
                               <span>Ya</span>
@@ -850,11 +844,10 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
                             <button
                               type="button"
                               onClick={() => handleVoteHelpful(rev.id, "tidak")}
-                              className={`flex items-center gap-1 px-2.5 py-1 rounded text-[11px] border transition-colors ${
-                                rev.user_voted === "tidak"
-                                  ? "bg-red-500/10 text-red-700 border-red-500/30 font-bold"
-                                  : "bg-muted/40 hover:bg-muted text-foreground border-border"
-                              }`}
+                              className={`flex items-center gap-1 px-2.5 py-1 rounded text-[11px] border transition-colors ${rev.user_voted === "tidak"
+                                ? "bg-red-500/10 text-red-700 border-red-500/30 font-bold"
+                                : "bg-muted/40 hover:bg-muted text-foreground border-border"
+                                }`}
                             >
                               <ThumbsDown className="h-3 w-3" />
                               <span>Tidak</span>
@@ -977,9 +970,8 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
                     className="p-1 focus:outline-none"
                   >
                     <Star
-                      className={`h-6 w-6 transition-colors ${
-                        s <= newReviewRating ? "fill-amber-400 text-amber-500" : "text-muted-foreground/30"
-                      }`}
+                      className={`h-6 w-6 transition-colors ${s <= newReviewRating ? "fill-amber-400 text-amber-500" : "text-muted-foreground/30"
+                        }`}
                     />
                   </button>
                 ))}
@@ -1051,7 +1043,12 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
             <Button type="button" variant="outline" size="sm" onClick={() => setActionType(null)}>
               Batal
             </Button>
-            <Button type="button" size="sm" onClick={handleConfirmAction} className="font-semibold">
+            <Button
+              type="button"
+              size="sm"
+              onClick={handleConfirmAction}
+              className="font-semibold rounded-lg transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_10px_22px_-4px_rgba(19,43,109,0.32)] active:translate-y-0 cursor-pointer"
+            >
               {actionType === "booking" ? "Ya, Ajukan Peminjaman" : "Ya, Masuk Antrean"}
             </Button>
           </DialogFooter>

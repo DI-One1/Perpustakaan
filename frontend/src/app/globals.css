@@ -176,6 +176,15 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Utilitas Sembunyikan Scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Pengurangan gerak untuk preferensi pengguna */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -73,19 +73,19 @@ export function BookRow({
               type="button"
               disabled={!canScrollLeft}
               onClick={() => scrollBy(-185)}
-              className="flex h-7 w-7 items-center justify-center rounded-full border border-border bg-white text-heading shadow-2xs hover:bg-background hover:border-primary/40 disabled:opacity-30 disabled:pointer-events-none transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-white text-heading shadow-2xs hover:bg-primary-soft hover:text-primary hover:border-primary/40 disabled:opacity-30 disabled:pointer-events-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xs active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
               aria-label={`Geser ${title} ke kiri`}
             >
-              <ChevronLeft className="h-3.5 w-3.5" />
+              <ChevronLeft className="h-4 w-4" />
             </button>
             <button
               type="button"
               disabled={!canScrollRight}
               onClick={() => scrollBy(185)}
-              className="flex h-7 w-7 items-center justify-center rounded-full border border-border bg-white text-heading shadow-2xs hover:bg-background hover:border-primary/40 disabled:opacity-30 disabled:pointer-events-none transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-white text-heading shadow-2xs hover:bg-primary-soft hover:text-primary hover:border-primary/40 disabled:opacity-30 disabled:pointer-events-none transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xs active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
               aria-label={`Geser ${title} ke kanan`}
             >
-              <ChevronRight className="h-3.5 w-3.5" />
+              <ChevronRight className="h-4 w-4" />
             </button>
           </div>
         </div>
