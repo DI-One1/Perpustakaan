@@ -13,6 +13,8 @@ interface BookCoverProps {
   priority?: boolean;
   sizes?: string;
   fit?: "contain" | "cover";
+  /** When true, removes border, shadow, and rounded corners (for card-embedded covers). */
+  borderless?: boolean;
 }
 
 // Map kategori slug ke default PNG modern (bukan SVG) sesuai inventaris
@@ -34,6 +36,7 @@ export function BookCover({
   priority = false,
   sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw",
   fit = "contain",
+  borderless = false,
 }: BookCoverProps) {
   const [hasError, setHasError] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -50,7 +53,10 @@ export function BookCover({
   return (
     <div
       className={cn(
-        "relative aspect-[2/3] w-full overflow-hidden rounded-md border border-border bg-background shadow-xs transition-shadow duration-200 group-hover:shadow-md",
+        "relative aspect-[2/3] w-full overflow-hidden transition-shadow duration-200 group-hover:shadow-md",
+        borderless
+          ? "rounded-none border-none shadow-none bg-muted/20"
+          : "rounded-md border border-border bg-background shadow-xs",
         className
       )}
     >
@@ -67,7 +73,7 @@ export function BookCover({
         priority={priority}
         className={cn(
           fit === "cover" ? "object-cover" : "object-contain p-0.5",
-          "transition-transform duration-300 group-hover:scale-[1.02]",
+          "transition-transform duration-300 group-hover:scale-[1.03]",
           isLoading ? "opacity-0" : "opacity-100"
         )}
         onLoad={() => setIsLoading(false)}

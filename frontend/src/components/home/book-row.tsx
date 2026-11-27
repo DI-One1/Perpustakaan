@@ -72,7 +72,7 @@ export function BookRow({
             <button
               type="button"
               disabled={!canScrollLeft}
-              onClick={() => scrollBy(-260)}
+              onClick={() => scrollBy(-185)}
               className="flex h-7 w-7 items-center justify-center rounded-full border border-border bg-white text-heading shadow-2xs hover:bg-background hover:border-primary/40 disabled:opacity-30 disabled:pointer-events-none transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
               aria-label={`Geser ${title} ke kiri`}
             >
@@ -81,7 +81,7 @@ export function BookRow({
             <button
               type="button"
               disabled={!canScrollRight}
-              onClick={() => scrollBy(260)}
+              onClick={() => scrollBy(185)}
               className="flex h-7 w-7 items-center justify-center rounded-full border border-border bg-white text-heading shadow-2xs hover:bg-background hover:border-primary/40 disabled:opacity-30 disabled:pointer-events-none transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
               aria-label={`Geser ${title} ke kanan`}
             >
@@ -91,11 +91,11 @@ export function BookRow({
         </div>
       </div>
 
-      {/* Track Horizontal Carousel Buku: Menampilkan 5 Kartu Horizontal Presisi Desktop */}
+      {/* Track Horizontal Carousel Buku: Cover-Dominant Cards */}
       <div
         ref={rowRef}
         onScroll={checkScrollState}
-        className="flex gap-2.5 overflow-x-auto pb-2 pt-1 no-scrollbar scroll-smooth [scroll-snap-type:x_mandatory] [overscroll-behavior-x:contain]"
+        className="flex gap-3 overflow-x-auto pb-2 pt-1 no-scrollbar scroll-smooth [scroll-snap-type:x_mandatory] [overscroll-behavior-x:contain]"
         style={{ scrollbarWidth: "none" }}
       >
         {books.map((book) => (

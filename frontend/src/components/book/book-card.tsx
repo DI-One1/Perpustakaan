@@ -13,7 +13,6 @@ export function BookCard({ book, layout = "horizontal", className = "" }: BookCa
   const isAvailable = book.eksemplar_tersedia > 0;
   const isBookedOnly = !isAvailable && book.eksemplar_dibooking > 0;
 
-  // Format Status Ketersediaan
   const statusColor = isAvailable
     ? "bg-emerald-500"
     : isBookedOnly
@@ -23,119 +22,65 @@ export function BookCard({ book, layout = "horizontal", className = "" }: BookCa
   const statusText = isAvailable
     ? "Tersedia"
     : isBookedOnly
-    ? `Dibooking (${book.eksemplar_dibooking})`
+    ? `Direservasi (${book.eksemplar_dibooking})`
     : "Antre";
 
-  if (layout === "horizontal") {
-    return (
-      <Link
-        href={`/buku/${book.id}`}
-        className={`group relative flex w-[249px] h-[193px] shrink-0 items-center rounded-[10px] border border-border bg-card p-3.5 shadow-xs transition-all duration-200 hover:border-primary/50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${className}`}
-      >
-        {/* SISI KIRI: Cover Buku Fisik (Proporsi 2:3 Presisi ~86px x ~129px, object-fit contain, tidak terpotong) */}
-        <div className="relative w-[86px] h-[129px] shrink-0 rounded-[6px] overflow-hidden border border-border bg-background shadow-2xs">
-          <BookCover
-            src={book.cover_path || book.cover_url}
-            judul={book.judul}
-            kategoriSlug={book.kategori_id.replace("cat-", "")}
-            fit="contain"
-            className="h-full w-full rounded-[5px] border-none shadow-none"
-          />
-        </div>
+  // Both layouts now use the same cover-dominant vertical design.
+  // "horizontal" = compact card for carousel rows (fixed width)
+  // "vertical"   = fluid card for catalog grid (fills container)
+  const isCompact = layout === "horizontal";
 
-        {/* SISI KANAN: Informasi Buku Lengkap (Tinggi 129px seimbang dengan cover) */}
-        <div className="ml-3.5 flex flex-1 flex-col justify-between h-[129px] min-w-0">
-          <div>
-            {/* 1. Judul Buku (Dominan, Semibold/Bold, Maks 2 baris, Navy) */}
-            <h3 className="line-clamp-2 text-[13px] font-bold text-heading leading-[1.3] group-hover:text-primary transition-colors">
-              {book.judul}
-            </h3>
-
-            {/* 2. Nama Penulis (Secondary Text, Lebih kecil) */}
-            <p className="mt-1 line-clamp-1 text-[11px] text-muted-foreground leading-tight">
-              {book.penulis}
-            </p>
-
-            {/* 3. Kategori (Chip Pale Blue, Teks Primary Blue) */}
-            <div className="mt-2">
-              <span className="inline-block rounded-[5px] bg-primary-soft px-2 py-0.5 text-[10px] font-semibold text-primary truncate max-w-full">
-                {book.kategori_nama}
-              </span>
-            </div>
-          </div>
-
-          {/* 4. Ketersediaan & Rating Aktual */}
-          <div className="pt-1.5 flex items-center justify-between border-t border-border/80">
-            <div className="flex items-center gap-1.5 text-[11px] font-medium text-foreground">
-              <span className={`h-2 w-2 rounded-full ${statusColor} shrink-0`} />
-              <span>{statusText}</span>
-            </div>
-
-            {/* Rating Bintang (Hanya tampil jika ada data rating aktual) */}
-            {typeof book.rating === "number" && book.rating > 0 && (
-              <div className="flex items-center gap-0.5 text-[10px] font-semibold text-muted-foreground">
-                <Star className="h-3 w-3 fill-amber-400 text-amber-400 shrink-0" />
-                <span>{book.rating.toFixed(1)}</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </Link>
-    );
-  }
-
-  // Layout Vertikal Standar (Fallback untuk Grid Katalog jika dibutuhkan)
   return (
-    <article className={`group relative flex flex-col rounded-[10px] border border-border bg-card p-3 shadow-xs transition-all duration-200 hover:border-primary/50 hover:shadow-md ${className}`}>
-      <Link
-        href={`/buku/${book.id}`}
-        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md"
-        tabIndex={-1}
-        aria-hidden="true"
-      >
+    <Link
+      href={`/buku/${book.id}`}
+      className={`group relative flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-xs transition-all duration-200 hover:border-primary/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${isCompact ? "w-[172px] shrink-0" : "w-full"} ${className}`}
+    >
+      {/* Cover Area: borderless, fills card width */}
+      <div className="relative w-full bg-muted/30">
         <BookCover
           src={book.cover_path || book.cover_url}
           judul={book.judul}
           kategoriSlug={book.kategori_id.replace("cat-", "")}
-          fit="contain"
-          className="w-full aspect-[2/3] rounded-md border border-border bg-background"
+          fit="cover"
+          borderless
+          className="w-full aspect-[2/3] rounded-none border-none shadow-none"
         />
-      </Link>
+      </div>
 
-      <div className="mt-2.5 flex flex-1 flex-col justify-between">
-        <div>
-          <span className="inline-block rounded-[5px] bg-primary-soft px-2 py-0.5 text-[11px] font-semibold text-primary mb-1.5">
-            {book.kategori_nama}
-          </span>
-
-          <h3 className="line-clamp-2 text-sm font-bold text-heading leading-snug group-hover:text-primary transition-colors">
-            <Link
-              href={`/buku/${book.id}`}
-              className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xs"
-            >
-              {book.judul}
-            </Link>
+      {/* Info Area: compact metadata below the cover */}
+      <div className={`flex flex-1 flex-col justify-between gap-1.5 ${isCompact ? "px-3 py-2.5" : "px-3.5 py-3"}`}>
+        <div className="space-y-1">
+          {/* Title */}
+          <h3 className={`line-clamp-2 font-bold text-heading leading-snug group-hover:text-primary transition-colors ${isCompact ? "text-[12.5px]" : "text-[13px]"}`}>
+            {book.judul}
           </h3>
 
-          <p className="mt-1 line-clamp-1 text-[12px] text-muted-foreground">
+          {/* Author */}
+          <p className="line-clamp-1 text-[11px] text-muted-foreground leading-tight">
             {book.penulis}
           </p>
+
+          {/* Category chip */}
+          <span className="inline-block rounded-[5px] bg-primary-soft px-1.5 py-px text-[10px] font-semibold text-primary truncate max-w-full">
+            {book.kategori_nama}
+          </span>
         </div>
 
-        <div className="mt-3 flex items-center justify-between border-t border-border pt-2 text-[12px]">
-          <div className="flex items-center gap-1.5 font-medium text-foreground">
-            <span className={`h-2 w-2 rounded-full ${statusColor}`} />
+        {/* Status & Rating row */}
+        <div className="flex items-center justify-between pt-1.5 border-t border-border/60">
+          <div className="flex items-center gap-1.5 text-[10.5px] font-medium text-foreground">
+            <span className={`h-[7px] w-[7px] rounded-full ${statusColor} shrink-0`} />
             <span>{statusText}</span>
           </div>
 
           {typeof book.rating === "number" && book.rating > 0 && (
-            <div className="flex items-center gap-1 text-[11px] font-semibold text-muted-foreground">
+            <div className="flex items-center gap-0.5 text-[10px] font-semibold text-muted-foreground">
               <Star className="h-3 w-3 fill-amber-400 text-amber-400 shrink-0" />
               <span>{book.rating.toFixed(1)}</span>
             </div>
           )}
         </div>
       </div>
-    </article>
+    </Link>
   );
 }

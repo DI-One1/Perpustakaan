@@ -282,17 +282,15 @@ function CatalogContent() {
           {paginatedBooks.length > 0 ? (
             <div className="space-y-6">
               {viewMode === "horizontal" ? (
-                // Tampilan Kartu Horizontal Sesuai Karakter Master Reference (5 Kolom di Desktop 1280px)
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3.5">
+                // Tampilan Cover-Dominant Cards (5-6 kolom desktop)
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5">
                   {paginatedBooks.map((book) => (
-                    <div key={book.id} className="flex justify-center">
-                      <BookCard book={book} layout="horizontal" className="w-full sm:w-[249px]" />
-                    </div>
+                    <BookCard key={book.id} book={book} layout="horizontal" className="w-full" />
                   ))}
                 </div>
               ) : (
-                // Tampilan Grid Vertikal Alternatif
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5">
+                // Tampilan Grid Vertikal Alternatif (lebih rapat)
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3">
                   {paginatedBooks.map((book) => (
                     <BookCard key={book.id} book={book} layout="vertical" />
                   ))}
