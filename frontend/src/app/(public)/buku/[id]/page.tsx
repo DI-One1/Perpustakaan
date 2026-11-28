@@ -20,6 +20,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useAuth } from "@/lib/auth-context";
+import { useToast } from "@/components/ui/toast";
 import {
   MOCK_BOOKS,
   MOCK_REVIEWS,
@@ -40,6 +41,7 @@ import {
   Check,
   ChevronLeft,
   Users,
+  Heart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -51,6 +53,7 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
   const { id } = React.use(params);
   const router = useRouter();
   const { user } = useAuth();
+  const { toast } = useToast();
 
   const book: MockBook | undefined = MOCK_BOOKS.find((b) => b.id === id);
 
@@ -66,8 +69,8 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
   const [selectedDuration, setSelectedDuration] = React.useState<number>(7);
   const [durationType, setDurationType] = React.useState<"7" | "custom">("7");
   const [customDays, setCustomDays] = React.useState<number>(14);
-  const isSinopsisLong = (book.sinopsis || "").length > 180;
-  const [isSinopsisExpanded, setIsSinopsisExpanded] = React.useState(false);
+  const isSinopsisLong = (book.sinopsis || "").length > 120;
+  const [isFavorited, setIsFavorited] = React.useState(false);
   const [quantity, setQuantity] = React.useState(1);
 
   // State Dialog Konfirmasi Pengajuan / Antre Buku
@@ -95,12 +98,57 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
   const [carouselIndex, setCarouselIndex] = React.useState(0);
   const maxCarouselIndex = Math.max(0, relatedBooks.length - 4);
 
+  // Handler Favorit
+  const handleFavoriteClick = () => {
+    const next = !isFavorited;
+    setIsFavorited(next);
+    toast({
+      message: next
+        ? "Berhasil ditambahkan ke favorit"
+        : "Berhasil dihapus dari favorit",
+      variant: "success",
+      action: {
+        label: "Cek Favorit",
+        onClick: () => router.push("/favorit"),
+      },
+    });
+  };
+
   // Handler Aksi Pengajuan Peminjaman / Antre Buku
   const handleActionClick = (type: "booking" | "antre") => {
     if (!user) {
       router.push(`/masuk?next=/buku/${book.id}`);
       return;
     }
+
+    if (user.is_blocked) {
+      toast({
+        message: "Akun Anda sedang dibekukan. Hubungi pustakawan untuk informasi lebih lanjut.",
+        variant: "error",
+      });
+      return;
+    }
+
+    if (user.denda_aktif > 0) {
+      toast({
+        message: `Anda memiliki tunggakan denda keterlambatan sebesar Rp${user.denda_aktif.toLocaleString("id-ID")} yang belum diselesaikan.`,
+        variant: "warning",
+      });
+      return;
+    }
+
+    if (user.reservasi_aktif) {
+      toast({
+        message: "Anda memiliki ajuan pinjam",
+        variant: "warning",
+        action: {
+          label: "Lihat Ajuan",
+          onClick: () => router.push("/pinjaman"),
+        },
+      });
+      return;
+    }
+
     setActionType(type);
   };
 
@@ -300,9 +348,26 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
               <div className="md:col-span-7 lg:col-span-8 space-y-4">
                 {/* 1. Judul, Penulis, Penerbit, Tahun & Rating Ulasan */}
                 <div className="space-y-1">
-                  <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-heading leading-tight">
-                    {book.judul}
-                  </h1>
+                  <div className="flex items-start justify-between gap-3">
+                    <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-heading leading-tight">
+                      {book.judul}
+                    </h1>
+                    <button
+                      type="button"
+                      onClick={handleFavoriteClick}
+                      className="shrink-0 flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background hover:bg-muted/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary cursor-pointer"
+                      aria-label={isFavorited ? "Hapus dari favorit" : "Tambah ke favorit"}
+                    >
+                      <Heart
+                        className={cn(
+                          "h-5 w-5 transition-colors duration-200",
+                          isFavorited
+                            ? "fill-pink-500 text-pink-500"
+                            : "fill-none text-muted-foreground"
+                        )}
+                      />
+                    </button>
+                  </div>
                   <p className="text-sm font-medium text-muted-foreground">
                     {book.penulis} · {book.penerbit}
                   </p>
@@ -337,16 +402,19 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
                   <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
                     SINOPSIS
                   </span>
-                  <p className={cn("text-xs text-foreground/90 leading-relaxed", isSinopsisLong && !isSinopsisExpanded && "line-clamp-3")}>
+                  <p className={cn("text-xs text-foreground/90 leading-relaxed", isSinopsisLong && "line-clamp-3")}>
                     {book.sinopsis}
                   </p>
                   {isSinopsisLong && (
                     <button
                       type="button"
-                      onClick={() => setIsSinopsisExpanded(!isSinopsisExpanded)}
-                      className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline focus:outline-none pt-0.5"
+                      onClick={() => {
+                        const el = document.getElementById("sinopsis-lengkap");
+                        if (el) el.scrollIntoView({ behavior: "smooth" });
+                      }}
+                      className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline focus:outline-none pt-0.5 cursor-pointer"
                     >
-                      <span>{isSinopsisExpanded ? "Tutup ringkasan ↑" : "Baca selengkapnya ↓"}</span>
+                      <span>Baca selengkapnya ↓</span>
                     </button>
                   )}
                 </div>
@@ -465,11 +533,12 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
 
                   <Button
                     type="button"
+                    disabled={book.eksemplar_tersedia <= 0}
                     onClick={() => handleActionClick("booking")}
                     className="flex-1 sm:flex-none sm:min-w-[190px] gap-2"
                   >
                     <Clock className="h-4 w-4" />
-                    <span>Ajukan Peminjaman</span>
+                    <span>{book.eksemplar_tersedia <= 0 ? "Stok Habis" : "Ajukan Peminjaman"}</span>
                   </Button>
                 </div>
               </div>
@@ -477,15 +546,15 @@ export default function BookDetailPage({ params }: BookDetailPageProps) {
           </section>
 
           {/* =========================================================================
-              3. CONTAINER 2 : DESKRIPSI LENGKAP BUKU
+              3. CONTAINER 2 : SINOPSIS
              ========================================================================= */}
           <section
-            id="deskripsi-lengkap"
+            id="sinopsis-lengkap"
             aria-labelledby="full-desc-heading"
             className="rounded-xl border border-border bg-card p-6 sm:p-7 shadow-xs space-y-4 scroll-mt-24"
           >
             <h2 id="full-desc-heading" className="text-base sm:text-lg font-bold text-foreground tracking-tight">
-              DESKRIPSI LENGKAP BUKU
+              SINOPSIS
             </h2>
 
             <div className="max-w-4xl space-y-3.5 text-sm leading-relaxed text-foreground/90">

@@ -1,6 +1,10 @@
+"use client";
+
+import * as React from "react";
 import Link from "next/link";
 import { BookCover } from "@/components/media/book-cover";
-import { Star } from "lucide-react";
+import { Star, Heart } from "lucide-react";
+import { useToast } from "@/components/ui/toast";
 import type { MockBook } from "@/mocks";
 
 interface BookCardProps {
@@ -10,8 +14,12 @@ interface BookCardProps {
 }
 
 export function BookCard({ book, layout = "horizontal", className = "" }: BookCardProps) {
+  const { toast } = useToast();
+  const [isFavorited, setIsFavorited] = React.useState(false);
+
   const isAvailable = book.eksemplar_tersedia > 0;
   const isBookedOnly = !isAvailable && book.eksemplar_dibooking > 0;
+  const isAllBorrowed = !isAvailable && !isBookedOnly;
 
   const statusColor = isAvailable
     ? "bg-emerald-500"
@@ -23,12 +31,33 @@ export function BookCard({ book, layout = "horizontal", className = "" }: BookCa
     ? "Tersedia"
     : isBookedOnly
     ? `Direservasi (${book.eksemplar_dibooking})`
+    : isAllBorrowed
+    ? "Tidak Tersedia"
     : "Antre";
 
   // Both layouts now use the same cover-dominant vertical design.
   // "horizontal" = compact card for carousel rows (fixed width)
   // "vertical"   = fluid card for catalog grid (fills container)
   const isCompact = layout === "horizontal";
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const next = !isFavorited;
+    setIsFavorited(next);
+    toast({
+      message: next
+        ? "Berhasil ditambahkan ke favorit"
+        : "Berhasil dihapus dari favorit",
+      variant: "success",
+      action: {
+        label: "Cek Favorit",
+        onClick: () => {
+          window.location.href = "/favorit";
+        },
+      },
+    });
+  };
 
   return (
     <Link
@@ -45,6 +74,22 @@ export function BookCard({ book, layout = "horizontal", className = "" }: BookCa
           borderless
           className="w-full aspect-[2/3] rounded-none border-none shadow-none"
         />
+
+        {/* Favorite Heart Icon */}
+        <button
+          type="button"
+          onClick={handleFavoriteClick}
+          className="absolute top-2 right-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm transition-all duration-200 hover:bg-white hover:scale-110 focus:outline-none"
+          aria-label={isFavorited ? "Hapus dari favorit" : "Tambah ke favorit"}
+        >
+          <Heart
+            className={`h-4 w-4 transition-colors duration-200 ${
+              isFavorited
+                ? "fill-pink-500 text-pink-500"
+                : "fill-none text-muted-foreground"
+            }`}
+          />
+        </button>
       </div>
 
       {/* Info Area: compact metadata below the cover */}

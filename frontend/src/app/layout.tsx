@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { AuthProvider } from "@/lib/auth-context";
+import { ToastProvider } from "@/components/ui/toast";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -21,6 +22,10 @@ export const metadata: Metadata = {
   title: "Perpustakaan Digital SMK TI Bazma",
   description:
     "Sistem informasi perpustakaan digital berbasis web untuk SMK TI Bazma - Yayasan BAZMA Pertamina",
+  icons: {
+    icon: "/FAV.ico",
+    shortcut: "/FAV.ico",
+  },
 };
 
 export default async function RootLayout({
@@ -38,7 +43,7 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider><ToastProvider>{children}</ToastProvider></AuthProvider>
         </NextIntlClientProvider>
       </body>
     </html>

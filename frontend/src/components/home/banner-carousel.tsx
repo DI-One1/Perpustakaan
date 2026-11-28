@@ -112,48 +112,47 @@ export function BannerCarousel() {
           ))}
 
           {/* Area Klik Navigasi Kiri (Vertikal Penuh) */}
-          <button
-            type="button"
-            onClick={handlePrev}
-            aria-label="Slide sebelumnya"
-            className="group/nav-left absolute inset-y-0 left-0 z-20 flex w-16 sm:w-20 md:w-24 items-center justify-start pl-3 sm:pl-4 transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-1"
-          >
-            {/* Latar Belakang Area Klik: Transparansi Tinggi Normal, Sedikit Meningkat Saat Di-Hover */}
-            <span
-              className="absolute inset-0 bg-gradient-to-r from-black/35 via-black/10 to-transparent opacity-0 transition-opacity duration-300 ease-[cubic-bezier(0.2,0,0,1)] group-hover/nav-left:opacity-100"
-              aria-hidden="true"
-            />
+<button
+  type="button"
+  onClick={handlePrev}
+  aria-label="Slide sebelumnya"
+  className="group/nav-left absolute inset-y-0 left-0 z-20 flex w-16 sm:w-20 md:w-24 items-center justify-start pl-3 sm:pl-4 transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-1"
+>
+  {/* Latar Belakang Area Klik: Gradasi Putih Tipis Saat Di-Hover */}
+  <span
+    className="absolute inset-0 bg-gradient-to-r from-white/15 via-white/5 to-transparent opacity-0 transition-opacity duration-300 ease-[cubic-bezier(0.2,0,0,1)] group-hover/nav-left:opacity-100"
+    aria-hidden="true"
+  />
+  {/* Ikon Panah Kiri: Tersembunyi Default, Muncul Saat Banner Di-Hover */}
+  <span
+    className="relative z-10 flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border border-gray-300 bg-white text-black backdrop-blur-xs shadow-sm shadow-white/20 opacity-0 transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] group-hover/banner:opacity-100 group-focus-visible/nav-left:opacity-100 group-hover/nav-left:border-transparent group-hover/nav-left:bg-white/15 group-hover/nav-left:text-white/70 group-hover/nav-left:scale-105 motion-reduce:transition-none"
+    aria-hidden="true"
+  >
+    <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
+  </span>
+</button>
 
-            {/* Ikon Panah Kiri: Tersembunyi Default, Muncul Saat Banner Di-Hover */}
-            <span
-              className="relative z-10 flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-xs shadow-md opacity-0 transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] group-hover/banner:opacity-100 group-focus-visible/nav-left:opacity-100 group-hover/nav-left:bg-black/60 group-hover/nav-left:scale-105 motion-reduce:transition-none"
-              aria-hidden="true"
-            >
-              <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
-            </span>
-          </button>
+{/* Area Klik Navigasi Kanan (Vertikal Penuh) */}
+<button
+  type="button"
+  onClick={handleNext}
+  aria-label="Slide berikutnya"
+  className="group/nav-right absolute inset-y-0 right-0 z-20 flex w-16 sm:w-20 md:w-24 items-center justify-end pr-3 sm:pr-4 transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-1"
+>
+  {/* Latar Belakang Area Klik: Gradasi Putih Tipis Saat Di-Hover */}
+  <span
+    className="absolute inset-0 bg-gradient-to-l from-white/15 via-white/5 to-transparent opacity-0 transition-opacity duration-300 ease-[cubic-bezier(0.2,0,0,1)] group-hover/nav-right:opacity-100"
+    aria-hidden="true"
+  />
+  {/* Ikon Panah Kanan: Tersembunyi Default, Muncul Saat Banner Di-Hover */}
+  <span
+    className="relative z-10 flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full border border-gray-300 bg-white text-black backdrop-blur-xs shadow-sm shadow-white/20 opacity-0 transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] group-hover/banner:opacity-100 group-focus-visible/nav-right:opacity-100 group-hover/nav-right:border-transparent group-hover/nav-right:bg-white/15 group-hover/nav-right:text-white/70 group-hover/nav-right:scale-105 motion-reduce:transition-none"
+    aria-hidden="true"
+  >
+    <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
+  </span>
+</button>
 
-          {/* Area Klik Navigasi Kanan (Vertikal Penuh) */}
-          <button
-            type="button"
-            onClick={handleNext}
-            aria-label="Slide berikutnya"
-            className="group/nav-right absolute inset-y-0 right-0 z-20 flex w-16 sm:w-20 md:w-24 items-center justify-end pr-3 sm:pr-4 transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-1"
-          >
-            {/* Latar Belakang Area Klik: Transparansi Tinggi Normal, Sedikit Meningkat Saat Di-Hover */}
-            <span
-              className="absolute inset-0 bg-gradient-to-l from-black/35 via-black/10 to-transparent opacity-0 transition-opacity duration-300 ease-[cubic-bezier(0.2,0,0,1)] group-hover/nav-right:opacity-100"
-              aria-hidden="true"
-            />
-
-            {/* Ikon Panah Kanan: Tersembunyi Default, Muncul Saat Banner Di-Hover */}
-            <span
-              className="relative z-10 flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-xs shadow-md opacity-0 transition-all duration-300 ease-[cubic-bezier(0.2,0,0,1)] group-hover/banner:opacity-100 group-focus-visible/nav-right:opacity-100 group-hover/nav-right:bg-black/60 group-hover/nav-right:scale-105 motion-reduce:transition-none"
-              aria-hidden="true"
-            >
-              <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
-            </span>
-          </button>
 
           {/* Carousel Indicators dengan Tap Target 44px M3 */}
           <div className="absolute bottom-1 left-1/2 z-30 flex -translate-x-1/2 items-center gap-0.5">
